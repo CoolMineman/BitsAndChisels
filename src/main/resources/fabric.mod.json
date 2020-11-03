@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "bitsandchisels",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "BitsAndChisels",
+  "description": "BitsAndChisels BitsAndChisels BitsAndChisels",
   "authors": [
-    "Me!"
+    "cool_mineman"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
@@ -14,16 +14,19 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/bitsandchisels/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "io.github.coolmineman.bitsandchisels.BitsAndChisels"
+    ],
+    "client": [
+      "io.github.coolmineman.bitsandchisels.BitsBlockClient"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "bitsandchisels.mixins.json"
   ],
 
   "depends": {

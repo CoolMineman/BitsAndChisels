@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "bitsandchisels:block/bits_block_model"
+        }
+    }
+}
