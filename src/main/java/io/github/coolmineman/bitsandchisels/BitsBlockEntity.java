@@ -1,6 +1,7 @@
 package io.github.coolmineman.bitsandchisels;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
@@ -21,7 +22,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
-                    states[i][j][k] = Blocks.AIR.getDefaultState();
+                    states[i][j][k] = ThreadLocalRandom.current().nextBoolean() ? Blocks.LIME_GLAZED_TERRACOTTA.getDefaultState() : Blocks.GREEN_CONCRETE.getDefaultState();
                 }
             }
         }
@@ -64,10 +65,12 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
             palette.add(NbtHelper.toBlockState((CompoundTag) statetag));
         }
         ListTag bits = (ListTag) tag.get("bits");
+        int index = 0;
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
-                    states[i][j][k] = palette.get(bits.getShort(i));
+                    states[i][j][k] = palette.get(bits.getShort(index));
+                    index++;
                 }
             }
         }

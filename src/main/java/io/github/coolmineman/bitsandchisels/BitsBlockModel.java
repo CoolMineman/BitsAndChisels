@@ -38,78 +38,23 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     // *Important Stuff
 
-    // public static class XTransform implements QuadTransform {
-    //     int x;
-
-    //     public XTransform(int x) {
-    //         this.x = x;
-    //     }
-
-    //     @Override
-    //     public boolean transform(MutableQuadView quad) {
-    //         Vector3f[] vectors = {new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f()};
-
-    //         for (int i = 0; i < 4; i++) {
-    //             quad.copyPos(i, vectors[i]);
-    //         }
-
-    //         boolean north_side = Arrays.stream(vectors).anyMatch(v -> v.getX() == 0 && v.getY() == 0 && v.getZ() == 0) && Arrays.stream(vectors).anyMatch(v -> v.getX() == 1 && v.getY() == 1);
-    //         boolean south_side = Arrays.stream(vectors).anyMatch(v -> v.getX() == 0 && v.getY() == 0 && v.getZ() == 1) && Arrays.stream(vectors).anyMatch(v -> v.getX() == 1 && v.getY() == 1);
-
-    //         for (int i = 0; i < 4; i++) {
-    //             Vector3f tmp = vectors[i];
-    //             if (tmp.getX() == 1.0f) {
-    //                 tmp.set( (((float)x) + 1f)/16f, tmp.getY(), tmp.getZ() );
-    //             }
-    //             quad.pos(i, tmp);
-    //         }
-
-    //         if (north_side) {
-    //             float u_scale = (quad.spriteU(2, 0) - quad.spriteU(0, 0)) * (1f/16f);
-    //             float v_scale = (quad.spriteV(2, 0) - quad.spriteV(0, 0)) * (1f/16f);
-    //             float bottom_u = quad.spriteU(0, 0);
-    //             float bottom_v = quad.spriteV(0, 0);
-
-    //             float min_u = bottom_u + (x * u_scale);
-    //             float min_v = bottom_v + (x * v_scale);
-    //             float max_u = min_u + u_scale;
-    //             float max_v = min_v + v_scale;
-
-    //             quad.sprite(0, 0, min_u, min_v);
-    //             quad.sprite(1, 0, max_u, min_v);
-    //             quad.sprite(2, 0, max_u, max_v);
-    //             quad.sprite(3, 0, min_u, max_v);
-    //         }
-
-    //         if (south_side) {
-    //             float u_scale = (quad.spriteU(2, 0) - quad.spriteU(0, 0)) * (1f/16f);
-    //             float v_scale = (quad.spriteV(2, 0) - quad.spriteV(0, 0)) * (1f/16f);
-    //             float top_u = quad.spriteU(2, 0);
-    //             float bottom_v = quad.spriteV(0, 0);
-
-    //             float min_u = top_u - (x * u_scale);
-    //             float min_v = bottom_v + (x * v_scale);
-    //             float max_u = min_u - 2 * u_scale;
-    //             float max_v = min_v + v_scale;
-
-    //             quad.sprite(0, 0, min_u, min_v);
-    //             quad.sprite(1, 0, max_u, min_v);
-    //             quad.sprite(2, 0, max_u, max_v);
-    //             quad.sprite(3, 0, min_u, max_v);
-    //         }
-
-    //         return true;
-    //     }
-        
-    // }
-
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         BitsBlockEntity e = (BitsBlockEntity) blockView.getBlockEntity(pos);
         if (e != null) {
-            context.pushTransform(new BitTransform());
-                context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(0, 0, 0)));
-            context.popTransform();
+            for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 16; j++) {
+                    for (int k = 0; k < 16; k++) {
+                        BitTransform transform = new BitTransform();
+                        transform.x = i;
+                        transform.y = j;
+                        transform.z = k;
+                        context.pushTransform(transform);
+                        if (!e.getState(i, j, k).isAir()) context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k)));
+                        context.popTransform();
+                    }
+                }
+            }
         }
     }
 
