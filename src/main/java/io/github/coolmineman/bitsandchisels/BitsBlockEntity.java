@@ -22,7 +22,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
-                    states[i][j][k] = ThreadLocalRandom.current().nextBoolean() ? Blocks.LIME_GLAZED_TERRACOTTA.getDefaultState() : Blocks.GREEN_CONCRETE.getDefaultState();
+                    states[i][j][k] = ThreadLocalRandom.current().nextBoolean() ? Blocks.LIME_GLAZED_TERRACOTTA.getDefaultState() : Blocks.REDSTONE_BLOCK.getDefaultState();
                 }
             }
         }

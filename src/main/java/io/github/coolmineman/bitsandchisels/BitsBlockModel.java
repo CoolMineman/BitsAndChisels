@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import com.mojang.datafixers.util.Pair;
 
 import grondag.frex.api.material.MaterialMap;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
