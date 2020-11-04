@@ -1,6 +1,5 @@
 package io.github.coolmineman.bitsandchisels;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -11,10 +10,10 @@ import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import grondag.frex.api.material.MaterialMap;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -26,8 +25,8 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -42,19 +41,36 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         BitsBlockEntity e = (BitsBlockEntity) blockView.getBlockEntity(pos);
         if (e != null) {
+            BitTransform transform = new BitTransform();
+            context.pushTransform(transform);
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 16; j++) {
                     for (int k = 0; k < 16; k++) {
-                        BitTransform transform = new BitTransform();
                         transform.x = i;
                         transform.y = j;
                         transform.z = k;
-                        context.pushTransform(transform);
-                        if (!e.getState(i, j, k).isAir()) context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k)));
-                        context.popTransform();
+
+                        boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
+
+                        if (canvas) {
+                            final int i2 = i;
+                            final int j2 = j;
+                            final int k2 = k;
+
+                            context.pushTransform(quad -> {
+                                Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
+                                quad.material(MaterialMap.get(e.getState(i2, j2, k2)).getMapped(sprite));
+                                return true;
+                            });
+                        }
+                        
+                        if (!e.getState(i, j, k).isAir()) ((FabricBakedModel)MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k))).emitBlockQuads(blockView, e.getState(i, j, k), pos, randomSupplier, context);
+
+                        if (canvas) context.popTransform();
                     }
                 }
             }
+            context.popTransform();
         }
     }
 
