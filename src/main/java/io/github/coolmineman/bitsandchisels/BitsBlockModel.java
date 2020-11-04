@@ -2,6 +2,7 @@ package io.github.coolmineman.bitsandchisels;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -23,12 +24,14 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -36,13 +39,41 @@ import net.minecraft.world.BlockRenderView;
 
 public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
+    private static final Identifier DEFAULT_BLOCK_MODEL = new Identifier("minecraft:block/block");
+ 
+    private ModelTransformation transformation;
+
     // *Important Stuff
+
+    private static final BitTransform transform = new BitTransform();
+    private static BitsBlockEntity e = new BitsBlockEntity();
+    private static HashMap<CompoundTag, BitsBlockEntity> entity_cache = new HashMap<>();
 
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-        BitsBlockEntity e = (BitsBlockEntity) blockView.getBlockEntity(pos);
+        e = (BitsBlockEntity) blockView.getBlockEntity(pos);
+        emitQuads(e, context);
+    }
+
+    @Override
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        e = entity_cache.computeIfAbsent(stack.getTag(), discard -> {
+            System.out.println("Cache Failed");
+            BitsBlockEntity result = new BitsBlockEntity();
+            CompoundTag tag = stack.getSubTag("BlockEntityTag");
+            if (tag != null) {
+                result.fromTag(null, tag);
+            }
+            return result;
+        });
+        
+            
+        emitQuads(e, context);
+    }
+
+    private static void emitQuads(BitsBlockEntity e, RenderContext context) {
+        boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
         if (e != null) {
-            BitTransform transform = new BitTransform();
             context.pushTransform(transform);
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 16; j++) {
@@ -50,8 +81,6 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
                         transform.x = i;
                         transform.y = j;
                         transform.z = k;
-
-                        boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
 
                         if (canvas) {
                             final int i2 = i;
@@ -65,7 +94,7 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
                             });
                         }
                         
-                        if (!e.getState(i, j, k).isAir()) ((FabricBakedModel)MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k))).emitBlockQuads(blockView, e.getState(i, j, k), pos, randomSupplier, context);
+                        if (!e.getState(i, j, k).isAir()) context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k)));
 
                         if (canvas) context.popTransform();
                     }
@@ -73,11 +102,6 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
             }
             context.popTransform();
         }
-    }
-
-    @Override
-    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        //todo
     }
 
     //*Stubs
@@ -96,6 +120,10 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
     @Override
     public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
             ModelBakeSettings rotationContainer, Identifier modelId) {
+        // Load the default block model
+        JsonUnbakedModel defaultBlockModel = (JsonUnbakedModel) loader.getOrLoadModel(DEFAULT_BLOCK_MODEL);
+        // Get its ModelTransformation
+        transformation = defaultBlockModel.getTransformations();
         return this;
     }
 
@@ -131,12 +159,12 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     @Override
     public ModelTransformation getTransformation() {
-        return null;
+        return transformation;
     }
 
     @Override
     public ModelOverrideList getOverrides() {
-        return null;
+        return ModelOverrideList.EMPTY;
     }
 
     @Override
