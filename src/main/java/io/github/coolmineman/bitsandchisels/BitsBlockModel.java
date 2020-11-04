@@ -52,26 +52,6 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         e = (BitsBlockEntity) blockView.getBlockEntity(pos);
-        emitQuads(e, context);
-    }
-
-    @Override
-    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        e = entity_cache.computeIfAbsent(stack.getTag(), discard -> {
-            System.out.println("Cache Failed");
-            BitsBlockEntity result = new BitsBlockEntity();
-            CompoundTag tag = stack.getSubTag("BlockEntityTag");
-            if (tag != null) {
-                result.fromTag(null, tag);
-            }
-            return result;
-        });
-        
-            
-        emitQuads(e, context);
-    }
-
-    private static void emitQuads(BitsBlockEntity e, RenderContext context) {
         boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
         if (e != null) {
             context.pushTransform(transform);
@@ -94,7 +74,52 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
                             });
                         }
                         
-                        if (!e.getState(i, j, k).isAir()) context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k)));
+                        if (!e.getState(i, j, k).isAir()) ((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k))).emitBlockQuads(blockView, state, pos, randomSupplier, context);
+
+                        if (canvas) context.popTransform();
+                    }
+                }
+            }
+            context.popTransform();
+        }
+    }
+
+    @Override
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        e = entity_cache.computeIfAbsent(stack.getTag(), discard -> {
+            System.out.println("Cache Failed");
+            BitsBlockEntity result = new BitsBlockEntity();
+            CompoundTag tag = stack.getSubTag("BlockEntityTag");
+            if (tag != null) {
+                result.fromTag(null, tag);
+            }
+            return result;
+        });
+
+        boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
+        
+        if (e != null) {
+            context.pushTransform(transform);
+            for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 16; j++) {
+                    for (int k = 0; k < 16; k++) {
+                        transform.x = i;
+                        transform.y = j;
+                        transform.z = k;
+
+                        if (canvas) {
+                            final int i2 = i;
+                            final int j2 = j;
+                            final int k2 = k;
+
+                            context.pushTransform(quad -> {
+                                Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
+                                quad.material(MaterialMap.get(e.getState(i2, j2, k2)).getMapped(sprite));
+                                return true;
+                            });
+                        }
+                        
+                        if (!e.getState(i, j, k).isAir()) ((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k))).emitItemQuads(stack, randomSupplier, context);
 
                         if (canvas) context.popTransform();
                     }
