@@ -45,43 +45,13 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     // *Important Stuff
 
-    private static final BitTransform transform = new BitTransform();
     private static BitsBlockEntity e = new BitsBlockEntity();
     private static HashMap<CompoundTag, BitsBlockEntity> entity_cache = new HashMap<>();
 
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         e = (BitsBlockEntity) blockView.getBlockEntity(pos);
-        boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
-        if (e != null) {
-            context.pushTransform(transform);
-            for (int i = 0; i < 16; i++) {
-                for (int j = 0; j < 16; j++) {
-                    for (int k = 0; k < 16; k++) {
-                        transform.x = i;
-                        transform.y = j;
-                        transform.z = k;
-
-                        if (canvas) {
-                            final int i2 = i;
-                            final int j2 = j;
-                            final int k2 = k;
-
-                            context.pushTransform(quad -> {
-                                Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
-                                quad.material(MaterialMap.get(e.getState(i2, j2, k2)).getMapped(sprite));
-                                return true;
-                            });
-                        }
-                        
-                        if (!e.getState(i, j, k).isAir()) ((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k))).emitBlockQuads(blockView, state, pos, randomSupplier, context);
-
-                        if (canvas) context.popTransform();
-                    }
-                }
-            }
-            context.popTransform();
-        }
+        if (e != null && e.mesh != null) context.meshConsumer().accept(e.mesh);
     }
 
     @Override
@@ -93,40 +63,11 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
             if (tag != null) {
                 result.fromTag(null, tag);
             }
+            result.rebuildMesh();
             return result;
         });
 
-        boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
-        
-        if (e != null) {
-            context.pushTransform(transform);
-            for (int i = 0; i < 16; i++) {
-                for (int j = 0; j < 16; j++) {
-                    for (int k = 0; k < 16; k++) {
-                        transform.x = i;
-                        transform.y = j;
-                        transform.z = k;
-
-                        if (canvas) {
-                            final int i2 = i;
-                            final int j2 = j;
-                            final int k2 = k;
-
-                            context.pushTransform(quad -> {
-                                Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
-                                quad.material(MaterialMap.get(e.getState(i2, j2, k2)).getMapped(sprite));
-                                return true;
-                            });
-                        }
-                        
-                        if (!e.getState(i, j, k).isAir()) ((FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(e.getState(i, j, k))).emitItemQuads(stack, randomSupplier, context);
-
-                        if (canvas) context.popTransform();
-                    }
-                }
-            }
-            context.popTransform();
-        }
+        if (e != null && e.mesh != null) context.meshConsumer().accept(e.mesh);
     }
 
     //*Stubs
