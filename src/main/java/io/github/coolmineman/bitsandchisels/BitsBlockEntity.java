@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import grondag.frex.api.material.MaterialMap;
+import io.github.coolmineman.bitsandchisels.mixin.SimpleVoxelShapeFactory;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -27,6 +28,8 @@ import net.minecraft.nbt.ShortTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.BitSetVoxelSet;
+import net.minecraft.util.shape.SimpleVoxelShape;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
@@ -99,19 +102,13 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     }
 
     public void setState(int x, int y, int z, BlockState state, boolean redraw) {
-        if (state.isAir() && !states[x][y][z].isAir()) {
-            shape = VoxelShapes.combine(shape, VoxelShapes.cuboid(x * ONE_PIXEL, y * ONE_PIXEL, z * ONE_PIXEL, (x + 1) * ONE_PIXEL, (y + 1) * ONE_PIXEL, (z + 1) * ONE_PIXEL), BooleanBiFunction.ONLY_FIRST);
-            if (redraw) redraw();
-        } else {
-            shape = VoxelShapes.combine(shape, VoxelShapes.cuboid(x * ONE_PIXEL, y * ONE_PIXEL, z * ONE_PIXEL, (x + 1) * ONE_PIXEL, (y + 1) * ONE_PIXEL, (z + 1) * ONE_PIXEL), BooleanBiFunction.OR);
-            if (redraw) redraw();
-        }
-        
         states[x][y][z] = state;
+        redraw();
     }
 
     public void redraw() {
         rebuildMesh();
+        rebuildCollision();
         MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
@@ -144,16 +141,16 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     }
 
     protected void rebuildCollision() {
-        VoxelShape result = VoxelShapes.empty();
+        BitSetVoxelSet set = new BitSetVoxelSet(16, 16, 16);
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
                     BlockState state = states[i][j][k];
-                    if (!state.isAir()) result = VoxelShapes.combine(result, VoxelShapes.cuboid(i * ONE_PIXEL, j * ONE_PIXEL, k * ONE_PIXEL, (i + 1) * ONE_PIXEL, (j + 1) * ONE_PIXEL, (k + 1) * ONE_PIXEL), BooleanBiFunction.OR);
+                    if (!state.isAir()) set.set(i, j, k, true, true);
                 }
             }
         }
-        shape = result;
+        shape = SimpleVoxelShapeFactory.getSimpleVoxelShape(set);
     }
 
     protected void rebuildMesh() {
