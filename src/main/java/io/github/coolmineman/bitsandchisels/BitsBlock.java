@@ -3,6 +3,7 @@ package io.github.coolmineman.bitsandchisels;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,11 @@ public class BitsBlock extends Block implements BlockEntityProvider {
     }
     
     @Override
-    public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        BitsBlockEntity e = (BitsBlockEntity) world.getBlockEntity(pos);
+        if (e != null) {
+            return e.shape;
+        }
         return VoxelShapes.empty();
     }
 

@@ -25,18 +25,26 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.ShortTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 
 public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
+
+    private static float ONE_PIXEL = 1f/16f;
+
     private BlockState[][][] states = new BlockState[16][16][16];
     protected Mesh mesh;
+    protected VoxelShape shape = VoxelShapes.fullCube();
+    private BitTransform transform = new BitTransform();
 
     public BitsBlockEntity() {
         super(BitsAndChisels.BITS_BLOCK_ENTITY);
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
-                    states[i][j][k] = ThreadLocalRandom.current().nextBoolean() ? Blocks.LIME_GLAZED_TERRACOTTA.getDefaultState() : Blocks.REDSTONE_BLOCK.getDefaultState();
+                    states[i][j][k] = Blocks.COBBLESTONE.getDefaultState();//ThreadLocalRandom.current().nextBoolean() ? Blocks.AIR.getDefaultState() : Blocks.REDSTONE_BLOCK.getDefaultState();
                 }
             }
         }
@@ -90,9 +98,21 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         }
     }
 
-    public void setState(int x, int y, int z, BlockState state) {
+    public void setState(int x, int y, int z, BlockState state, boolean redraw) {
+        if (state.isAir() && !states[x][y][z].isAir()) {
+            shape = VoxelShapes.combine(shape, VoxelShapes.cuboid(x * ONE_PIXEL, y * ONE_PIXEL, z * ONE_PIXEL, (x + 1) * ONE_PIXEL, (y + 1) * ONE_PIXEL, (z + 1) * ONE_PIXEL), BooleanBiFunction.ONLY_FIRST);
+            if (redraw) redraw();
+        } else {
+            shape = VoxelShapes.combine(shape, VoxelShapes.cuboid(x * ONE_PIXEL, y * ONE_PIXEL, z * ONE_PIXEL, (x + 1) * ONE_PIXEL, (y + 1) * ONE_PIXEL, (z + 1) * ONE_PIXEL), BooleanBiFunction.OR);
+            if (redraw) redraw();
+        }
+        
         states[x][y][z] = state;
+    }
+
+    public void redraw() {
         rebuildMesh();
+        MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     public BlockState getState(int x, int y, int z) {
@@ -123,9 +143,21 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         return true;
     }
 
-    public void rebuildMesh() {
+    protected void rebuildCollision() {
+        VoxelShape result = VoxelShapes.empty();
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
+                for (int k = 0; k < 16; k++) {
+                    BlockState state = states[i][j][k];
+                    if (!state.isAir()) result = VoxelShapes.combine(result, VoxelShapes.cuboid(i * ONE_PIXEL, j * ONE_PIXEL, k * ONE_PIXEL, (i + 1) * ONE_PIXEL, (j + 1) * ONE_PIXEL, (k + 1) * ONE_PIXEL), BooleanBiFunction.OR);
+                }
+            }
+        }
+        shape = result;
+    }
+
+    protected void rebuildMesh() {
         boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
-        BitTransform transform = new BitTransform();
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
         QuadEmitter emitter = builder.getEmitter();
         for (int i = 0; i < 16; i++) {
@@ -157,6 +189,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     @Override
     public void fromClientTag(CompoundTag tag) {
         fromTag(null, tag);
+        rebuildCollision();
         rebuildMesh();
         MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
