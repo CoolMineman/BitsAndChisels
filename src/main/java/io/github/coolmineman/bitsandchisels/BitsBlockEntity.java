@@ -1,14 +1,13 @@
 package io.github.coolmineman.bitsandchisels;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import grondag.frex.api.material.MaterialMap;
 import io.github.coolmineman.bitsandchisels.mixin.SimpleVoxelShapeFactory;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -26,21 +25,18 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.ShortTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.BitSetVoxelSet;
-import net.minecraft.util.shape.SimpleVoxelShape;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
 public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
 
-    private static float ONE_PIXEL = 1f/16f;
-
     private BlockState[][][] states = new BlockState[16][16][16];
     protected Mesh mesh;
     protected VoxelShape shape = VoxelShapes.fullCube();
     private BitTransform transform = new BitTransform();
+    public UUID dontupdateuuid;
 
     public BitsBlockEntity() {
         super(BitsAndChisels.BITS_BLOCK_ENTITY);
@@ -99,17 +95,17 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                 }
             }
         }
-    }
-
-    public void setState(int x, int y, int z, BlockState state, boolean redraw) {
-        states[x][y][z] = state;
-        redraw();
-    }
-
-    public void redraw() {
-        rebuildMesh();
         rebuildCollision();
-        MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public void setState(int x, int y, int z, BlockState state) {
+        states[x][y][z] = state;
+    }
+
+    public void rebuild(boolean client) {
+        if (client) rebuildMesh();
+        rebuildCollision();
+        if (client) MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     public BlockState getState(int x, int y, int z) {
@@ -173,6 +169,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                                     Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
                                     quad.material(MaterialMap.get(states[i][j][k]).getMapped(sprite));
                                 }
+                                quad.cullFace(null);
                                 emitter = emitter.emit();
                             }
                         }
@@ -185,14 +182,17 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
 
     @Override
     public void fromClientTag(CompoundTag tag) {
+        if (tag.contains("ignoreplayer") && tag.getUuid("ignoreplayer").equals(MinecraftClient.getInstance().player.getUuid())) return;
         fromTag(null, tag);
-        rebuildCollision();
         rebuildMesh();
-        MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
+        if (dontupdateuuid != null) {
+            tag.putUuid("ignoreplayer", dontupdateuuid);
+            dontupdateuuid = null;
+        }
         return toTag(tag);
     }
 

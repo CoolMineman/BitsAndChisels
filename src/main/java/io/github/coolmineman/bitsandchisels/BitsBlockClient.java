@@ -2,18 +2,14 @@ package io.github.coolmineman.bitsandchisels;
 
 import org.jetbrains.annotations.Nullable;
 
-import io.github.coolmineman.bitsandchisels.chisel.StoneChisel;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.item.Item;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 
 public class BitsBlockClient implements ClientModInitializer {
@@ -22,13 +18,7 @@ public class BitsBlockClient implements ClientModInitializer {
     public void onInitializeClient() {
         BlockRenderLayerMap.INSTANCE.putBlock(BitsAndChisels.BITS_BLOCK, RenderLayer.getCutout());
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new BitsModelProvider());
-        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            Item i = player.getStackInHand(hand).getItem();
-            if (i instanceof StoneChisel) {
-                return ((StoneChisel)i).interactBreakBlockClient(player, world, pos);
-            }
-            return ActionResult.PASS;
-        });
+        BitsAndChisels.DIAMOND_CHISEL.initClient();
     }
 
     public static class BitsModelProvider implements ModelResourceProvider {

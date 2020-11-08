@@ -42,7 +42,7 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
     // *Important Stuff
 
     private static BitsBlockEntity e = new BitsBlockEntity();
-    private static HashMap<CompoundTag, BitsBlockEntity> entity_cache = new HashMap<>();
+    private static LRUCache<CompoundTag, BitsBlockEntity> entity_cache = new LRUCache<>(200); //Should be enough (tm)
 
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
