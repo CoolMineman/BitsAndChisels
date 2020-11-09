@@ -11,7 +11,9 @@ import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Pair;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -21,7 +23,6 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
@@ -35,24 +36,19 @@ import net.minecraft.world.BlockRenderView;
 
 public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
-    private static final Identifier DEFAULT_BLOCK_MODEL = new Identifier("minecraft:block/block");
- 
-    private ModelTransformation transformation;
-
     // *Important Stuff
 
-    private static BitsBlockEntity e = new BitsBlockEntity();
-    private static LRUCache<CompoundTag, BitsBlockEntity> entity_cache = new LRUCache<>(200); //Should be enough (tm)
+    private static LRUCache<CompoundTag, Mesh> cache = new LRUCache<>(200); //Should be enough (tm)
 
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-        e = (BitsBlockEntity) blockView.getBlockEntity(pos);
+        BitsBlockEntity e = (BitsBlockEntity) blockView.getBlockEntity(pos);
         if (e != null && e.mesh != null) context.meshConsumer().accept(e.mesh);
     }
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        e = entity_cache.computeIfAbsent(stack.getTag(), discard -> {
+        Mesh mesh = cache.computeIfAbsent(stack.getTag(), discard -> {
             System.out.println("Cache Failed");
             BitsBlockEntity result = new BitsBlockEntity();
             CompoundTag tag = stack.getSubTag("BlockEntityTag");
@@ -60,10 +56,10 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
                 result.fromTag(null, tag);
             }
             result.rebuildMesh();
-            return result;
+            return result.mesh;
         });
 
-        if (e != null && e.mesh != null) context.meshConsumer().accept(e.mesh);
+        if (mesh != null) context.meshConsumer().accept(mesh);
     }
 
     //*Stubs
@@ -82,10 +78,6 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
     @Override
     public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
             ModelBakeSettings rotationContainer, Identifier modelId) {
-        // Load the default block model
-        JsonUnbakedModel defaultBlockModel = (JsonUnbakedModel) loader.getOrLoadModel(DEFAULT_BLOCK_MODEL);
-        // Get its ModelTransformation
-        transformation = defaultBlockModel.getTransformations();
         return this;
     }
 
@@ -121,7 +113,7 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     @Override
     public ModelTransformation getTransformation() {
-        return transformation;
+        return ModelHelper.MODEL_TRANSFORM_BLOCK;
     }
 
     @Override

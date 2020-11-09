@@ -23,11 +23,15 @@ public class BitsBlockClient implements ClientModInitializer {
 
     public static class BitsModelProvider implements ModelResourceProvider {
         public static final Identifier BITS_BLOCK_MODEL = new Identifier("bitsandchisels:block/bits_block_model");
-        public static final Identifier BITS_ITEM_MODEL = new Identifier("bitsandchisels:item/bits_block");
+        public static final Identifier BITS_BLOCK_ITEM_MODEL = new Identifier("bitsandchisels:item/bits_block");
+        public static final Identifier BIT_ITEM_MODEL = new Identifier("bitsandchisels:item/bit_item");
+
         @Override
         public @Nullable UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException {
-            if(resourceId.equals(BITS_BLOCK_MODEL) || resourceId.equals(BITS_ITEM_MODEL)) {
+            if(resourceId.equals(BITS_BLOCK_MODEL) || resourceId.equals(BITS_BLOCK_ITEM_MODEL)) {
                 return new BitsBlockModel();
+            } else if (resourceId.equals(BIT_ITEM_MODEL)) {
+                return new BitItemModel();
             } else {
                 return null;
             }

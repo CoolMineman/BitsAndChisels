@@ -6,6 +6,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -39,10 +40,13 @@ public class DiamondChisel extends ToolItem {
             int z = attachedData.readInt();
             packetContext.getTaskQueue().execute(() -> {
                 // Execute on the main thread
-                if (packetContext.getPlayer().world.canSetBlock(pos) && packetContext.getPlayer().getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
-                    BitUtils.setBit(packetContext.getPlayer().world, packetContext.getPlayer(), pos, x, y, z, Blocks.AIR.getDefaultState(), true);
+                PlayerEntity player = packetContext.getPlayer();
+                World world = player.world;
+                if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
+                    BlockState oldstate = BitUtils.getBit(world, pos, x, y, z);
+                    BitUtils.setBit(world, player, pos, x, y, z, Blocks.AIR.getDefaultState(), true);
+                    if (!oldstate.isAir()) player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate));
                 }
- 
             });
         });
     }

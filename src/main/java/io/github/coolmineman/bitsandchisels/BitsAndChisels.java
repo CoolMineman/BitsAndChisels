@@ -2,6 +2,7 @@ package io.github.coolmineman.bitsandchisels;
 
 import io.github.coolmineman.bitsandchisels.chisel.DiamondChisel;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
@@ -16,6 +17,8 @@ public class BitsAndChisels implements ModInitializer {
 	public static final DiamondChisel DIAMOND_CHISEL = new DiamondChisel(new Item.Settings());
 	public static BlockEntityType<BitsBlockEntity> BITS_BLOCK_ENTITY;
 
+	public static final BitItem BIT_ITEM = new BitItem(new FabricItemSettings());
+
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -26,6 +29,8 @@ public class BitsAndChisels implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("bitsandchisels", "bits_block"), new BlockItem(BITS_BLOCK, new Item.Settings()));
 		Registry.register(Registry.ITEM, new Identifier("bitsandchisels", "diamond_chisel"), DIAMOND_CHISEL);
 		DIAMOND_CHISEL.init();
+		Registry.register(Registry.ITEM, new Identifier("bitsandchisels", "bit_item"), BIT_ITEM);
+		BIT_ITEM.init();
 	}
 	
 }
