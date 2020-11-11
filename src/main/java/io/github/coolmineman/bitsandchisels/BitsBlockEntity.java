@@ -38,11 +38,15 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     private BitTransform transform = new BitTransform();
 
     public BitsBlockEntity() {
+        this(Blocks.AIR.getDefaultState());
+    }
+
+    public BitsBlockEntity(BlockState state) {
         super(BitsAndChisels.BITS_BLOCK_ENTITY);
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
-                    states[i][j][k] = Blocks.AIR.getDefaultState();
+                    states[i][j][k] = state;
                 }
             }
         }

@@ -47,7 +47,7 @@ public class DiamondChisel extends ToolItem {
                 if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
                     Optional<BlockState> oldstate = BitUtils.getBit(world, pos, x, y, z);
                     if (oldstate.isPresent()) {
-                        BitUtils.setBit(world, player, pos, x, y, z, Blocks.AIR.getDefaultState(), true);
+                        BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState(), true);
                         if (!oldstate.get().isAir()) player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate.get()));
                     }
                 }
@@ -66,19 +66,15 @@ public class DiamondChisel extends ToolItem {
     }
 
     public ActionResult interactBreakBlockClient(PlayerEntity player, World world, BlockPos pos) {
-        BlockEntity e1 = world.getBlockEntity(pos);
-        if (e1 instanceof BitsBlockEntity) {
-            BitsBlockEntity e = (BitsBlockEntity) e1;
-            MinecraftClient client = MinecraftClient.getInstance();
-            HitResult hit = client.crosshairTarget;
-             
-            if (hit.getType() == HitResult.Type.BLOCK) {
-                Direction direction = ((BlockHitResult)hit).getSide();
-                int x = (int) Math.floor(((hit.getPos().getX() - pos.getX()) * 16) + (direction.getOffsetX() * -0.5d));
-                int y = (int) Math.floor(((hit.getPos().getY() - pos.getY()) * 16) + (direction.getOffsetY() * -0.5d));
-                int z = (int) Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d));
-                e.setState(x, y, z, Blocks.AIR.getDefaultState());
-                e.rebuild(true);
+        MinecraftClient client = MinecraftClient.getInstance();
+        HitResult hit = client.crosshairTarget;
+
+        if (hit.getType() == HitResult.Type.BLOCK) {
+            Direction direction = ((BlockHitResult)hit).getSide();
+            int x = (int) Math.floor(((hit.getPos().getX() - pos.getX()) * 16) + (direction.getOffsetX() * -0.5d));
+            int y = (int) Math.floor(((hit.getPos().getY() - pos.getY()) * 16) + (direction.getOffsetY() * -0.5d));
+            int z = (int) Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d));
+            if (BitUtils.exists(BitUtils.getBit(world, pos, x, y, z))) {
                 PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
                 passedData.writeBlockPos(pos);
                 passedData.writeInt(x);

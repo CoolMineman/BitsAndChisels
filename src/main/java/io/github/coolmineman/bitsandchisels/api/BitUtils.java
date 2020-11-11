@@ -18,9 +18,13 @@ import net.minecraft.world.World;
 public class BitUtils {
     private BitUtils(){}
 
-    public static boolean setBit(World world, @Nullable PlayerEntity player, BlockPos block, int x, int y, int z, BlockState state, boolean updateclients) {
-        if (world.getBlockState(block).isAir()) {
+    public static boolean setBit(World world, BlockPos block, int x, int y, int z, BlockState state, boolean updateclients) {
+        BlockState target_state = world.getBlockState(block);
+        if (target_state.isAir()) {
             world.setBlockState(block, BitsAndChisels.BITS_BLOCK.getDefaultState());
+        } else if (!target_state.isOf(BitsAndChisels.BITS_BLOCK) && target_state.isFullCube(world, block)) {
+            world.setBlockState(block, BitsAndChisels.BITS_BLOCK.getDefaultState(), 0);
+            world.setBlockEntity(block, new BitsBlockEntity(target_state));
         }
         BlockEntity e1 = world.getBlockEntity(block);
         if (e1 instanceof BitsBlockEntity) {
@@ -48,10 +52,13 @@ public class BitUtils {
     }
 
     public static Optional<BlockState> getBit(World world, BlockPos block, int x, int y, int z) {
+        BlockState state = world.getBlockState(block);
         BlockEntity e1 = world.getBlockEntity(block);
         if (e1 instanceof BitsBlockEntity) {
             BitsBlockEntity e = (BitsBlockEntity) e1;
             return Optional.of(e.getState(x, y, z));
+        } else if (!state.isOf(BitsAndChisels.BITS_BLOCK)) {
+            if (state.isFullCube(world, block)) return Optional.of(state);
         }
         return Optional.empty();
     }
