@@ -1,5 +1,7 @@
 package io.github.coolmineman.bitsandchisels.chisel;
 
+import java.util.Optional;
+
 import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
 import io.netty.buffer.Unpooled;
@@ -43,9 +45,11 @@ public class DiamondChisel extends ToolItem {
                 PlayerEntity player = packetContext.getPlayer();
                 World world = player.world;
                 if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
-                    BlockState oldstate = BitUtils.getBit(world, pos, x, y, z);
-                    BitUtils.setBit(world, player, pos, x, y, z, Blocks.AIR.getDefaultState(), true);
-                    if (!oldstate.isAir()) player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate));
+                    Optional<BlockState> oldstate = BitUtils.getBit(world, pos, x, y, z);
+                    if (oldstate.isPresent()) {
+                        BitUtils.setBit(world, player, pos, x, y, z, Blocks.AIR.getDefaultState(), true);
+                        if (!oldstate.get().isAir()) player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate.get()));
+                    }
                 }
             });
         });

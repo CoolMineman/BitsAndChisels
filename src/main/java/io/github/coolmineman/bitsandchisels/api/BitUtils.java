@@ -1,5 +1,7 @@
 package io.github.coolmineman.bitsandchisels.api;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
@@ -17,13 +19,15 @@ public class BitUtils {
     private BitUtils(){}
 
     public static boolean setBit(World world, @Nullable PlayerEntity player, BlockPos block, int x, int y, int z, BlockState state, boolean updateclients) {
+        if (world.getBlockState(block).isAir()) {
+            world.setBlockState(block, BitsAndChisels.BITS_BLOCK.getDefaultState());
+        }
         BlockEntity e1 = world.getBlockEntity(block);
         if (e1 instanceof BitsBlockEntity) {
             BitsBlockEntity e = (BitsBlockEntity) e1;
             e.setState(x, y, z, state);
             e.rebuild(false);
             if (updateclients) {
-                if (player != null) e.dontupdateuuid = player.getUuid();
                 e.sync();
             }
             return true;
@@ -31,24 +35,29 @@ public class BitUtils {
         return false;
     }
 
-    public static boolean setBitClient(World world, BlockPos block, int x, int y, int z, BlockState state, boolean rebuild) {
+    public static boolean canPlace(World world, BlockPos block, int x, int y, int z) {
+        if (world.getBlockState(block).isAir()) {
+            return true;
+        }
         BlockEntity e1 = world.getBlockEntity(block);
         if (e1 instanceof BitsBlockEntity) {
-            BitsBlockEntity e = (BitsBlockEntity) e1;
-            e.setState(x, y, z, state);
-            if (rebuild) e.rebuild(true);
-            return true;
+            System.out.println(((BitsBlockEntity) e1).getState(x, y, z));
+            return ((BitsBlockEntity) e1).getState(x, y, z).isAir();
         }
         return false;
     }
 
-    public static BlockState getBit(World world, BlockPos block, int x, int y, int z) {
+    public static Optional<BlockState> getBit(World world, BlockPos block, int x, int y, int z) {
         BlockEntity e1 = world.getBlockEntity(block);
         if (e1 instanceof BitsBlockEntity) {
             BitsBlockEntity e = (BitsBlockEntity) e1;
-            return e.getState(x, y, z);
+            return Optional.of(e.getState(x, y, z));
         }
-        return Blocks.AIR.getDefaultState();
+        return Optional.empty();
+    }
+
+    public static boolean exists(Optional<BlockState> bit) {
+        return bit.isPresent() ? !bit.get().isAir() : false;
     }
 
     public static ItemStack getBitItemStack(BlockState state) {

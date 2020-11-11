@@ -36,18 +36,16 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     protected Mesh mesh;
     protected VoxelShape shape = VoxelShapes.fullCube();
     private BitTransform transform = new BitTransform();
-    public UUID dontupdateuuid;
 
     public BitsBlockEntity() {
         super(BitsAndChisels.BITS_BLOCK_ENTITY);
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
-                    states[i][j][k] = Blocks.COBBLESTONE.getDefaultState();//ThreadLocalRandom.current().nextBoolean() ? Blocks.AIR.getDefaultState() : Blocks.REDSTONE_BLOCK.getDefaultState();
+                    states[i][j][k] = Blocks.AIR.getDefaultState();
                 }
             }
         }
-        states[0][0][0] = Blocks.COBBLESTONE.getDefaultState();
     }
 
     @Override
@@ -182,17 +180,13 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        if (tag.contains("ignoreplayer") && tag.getUuid("ignoreplayer").equals(MinecraftClient.getInstance().player.getUuid())) return;
         fromTag(null, tag);
         rebuildMesh();
+        MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
-        if (dontupdateuuid != null) {
-            tag.putUuid("ignoreplayer", dontupdateuuid);
-            dontupdateuuid = null;
-        }
         return toTag(tag);
     }
 

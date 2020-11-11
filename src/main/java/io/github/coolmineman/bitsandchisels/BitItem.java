@@ -4,7 +4,6 @@ import io.github.coolmineman.bitsandchisels.api.BitUtils;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -40,7 +39,7 @@ public class BitItem extends Item {
                 // Execute on the main thread
                 PlayerEntity player = packetContext.getPlayer();
                 World world = player.world;
-                if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 && BitUtils.getBit(world, pos, x, y, z).isAir()) {
+                if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 && !BitUtils.exists(BitUtils.getBit(world, pos, x, y, z))) {
                     ItemStack stack = player.getStackInHand(hand);
                     if (BitUtils.setBit(world, player, pos, x, y, z, BitUtils.getBit(stack), true)) stack.decrement(1);
                 }
@@ -62,33 +61,31 @@ public class BitItem extends Item {
             int z = ((int) Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d))) + direction.getOffsetZ();
 
             if (x > 15) {
-                pos.add(1, 0, 0);
+                pos = pos.add(1, 0, 0);
                 x -= 16;
             }
             if (y > 15) {
-                pos.add(0, 1, 0);
+                pos = pos.add(0, 1, 0);
                 y -= 16;
             }
             if (z > 15) {
-                pos.add(0, 0, 1);
+                pos = pos.add(0, 0, 1);
                 z -= 16;
             }
             if (x < 0) {
-                pos.add(-1, 0, 0);
+                pos = pos.add(-1, 0, 0);
                 x += 16;
             }
             if (y < 0) {
-                pos.add(0, -1, 0);
+                pos = pos.add(0, -1, 0);
                 y += 16;
             }
             if (z < 0) {
-                pos.add(0, 0, -1);
+                pos = pos.add(0, 0, -1);
                 z += 16;
             }
-
-            boolean place = BitUtils.setBitClient(context.getWorld(), pos, x, y, z, BitUtils.getBit(context.getStack()), true);
-
-            if (place) {
+            
+            if (BitUtils.canPlace(context.getWorld(), pos, x, y, z)) {
                 PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
                 passedData.writeBlockPos(pos);
                 passedData.writeInt(x);
