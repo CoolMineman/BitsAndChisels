@@ -1,7 +1,6 @@
 package io.github.coolmineman.bitsandchisels;
 
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import grondag.frex.api.material.MaterialMap;
@@ -36,6 +35,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     protected Mesh mesh;
     protected VoxelShape shape = VoxelShapes.fullCube();
     private BitTransform transform = new BitTransform();
+    boolean fullcube = false;
 
     public BitsBlockEntity() {
         this(Blocks.AIR.getDefaultState());
@@ -97,7 +97,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                 }
             }
         }
-        rebuildCollision();
+        rebuildShape();
     }
 
     public void setState(int x, int y, int z, BlockState state) {
@@ -106,7 +106,10 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
 
     public void rebuild(boolean client) {
         if (client) rebuildMesh();
-        rebuildCollision();
+        rebuildShape();
+        if (!client && fullcube) {
+            world.setBlockState(pos, states[0][0][0]);
+        }
         if (client) MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
@@ -138,13 +141,20 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         return true;
     }
 
-    protected void rebuildCollision() {
+    protected void rebuildShape() {
+        fullcube = true;
         BitSetVoxelSet set = new BitSetVoxelSet(16, 16, 16);
+        BlockState firststate = states[0][0][0];
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
                     BlockState state = states[i][j][k];
-                    if (!state.isAir()) set.set(i, j, k, true, true);
+                    if (!state.isAir()) {
+                        set.set(i, j, k, true, true);
+                    }
+                    if (firststate != state) {
+                        fullcube = false;
+                    }
                 }
             }
         }
