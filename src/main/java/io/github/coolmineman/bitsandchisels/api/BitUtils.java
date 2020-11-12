@@ -7,9 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +44,6 @@ public class BitUtils {
         }
         BlockEntity e1 = world.getBlockEntity(block);
         if (e1 instanceof BitsBlockEntity) {
-            System.out.println(((BitsBlockEntity) e1).getState(x, y, z));
             return ((BitsBlockEntity) e1).getState(x, y, z).isAir();
         }
         return false;

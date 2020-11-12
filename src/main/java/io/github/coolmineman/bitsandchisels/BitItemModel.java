@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 import com.mojang.datafixers.util.Pair;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -78,7 +77,7 @@ public class BitItemModel implements UnbakedModel, BakedModel, FabricBakedModel 
 
     @Override
     public List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
-        return null;
+        throw new RuntimeException("Your renderer doesn't support Fabric rendering API. Get one that does, I recommend canvas or indigo.");
     }
 
     @Override

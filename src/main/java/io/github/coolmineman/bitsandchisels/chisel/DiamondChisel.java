@@ -2,7 +2,6 @@ package io.github.coolmineman.bitsandchisels.chisel;
 
 import java.util.Optional;
 
-import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -10,7 +9,6 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;

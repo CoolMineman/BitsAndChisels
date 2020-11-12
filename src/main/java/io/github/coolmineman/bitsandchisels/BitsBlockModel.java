@@ -2,7 +2,6 @@ package io.github.coolmineman.bitsandchisels;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -49,7 +48,6 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
         Mesh mesh = cache.computeIfAbsent(stack.getTag(), discard -> {
-            System.out.println("Cache Failed");
             BitsBlockEntity result = new BitsBlockEntity();
             CompoundTag tag = stack.getSubTag("BlockEntityTag");
             if (tag != null) {
