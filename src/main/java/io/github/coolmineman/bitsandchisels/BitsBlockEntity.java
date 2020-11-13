@@ -7,6 +7,7 @@ import grondag.frex.api.material.MaterialMap;
 import io.github.coolmineman.bitsandchisels.mixin.SimpleVoxelShapeFactory;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -16,6 +17,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -120,22 +123,22 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     public boolean quadNeeded(Direction d, int x, int y, int z) {
         switch (d) {
             case UP:
-                if (y <= 14) return states[x][y + 1][z].isAir();
+                if (y <= 14) return states[x][y + 1][z].isAir() || (RenderLayers.getBlockLayer(states[x][y + 1][z]) != RenderLayer.getSolid() && states[x][y][z] != states[x][y + 1][z]);
                 return true;
             case DOWN:
-                if (y >= 1) return states[x][y - 1][z].isAir();
+                if (y >= 1) return states[x][y - 1][z].isAir() || (RenderLayers.getBlockLayer(states[x][y - 1][z]) != RenderLayer.getSolid() && states[x][y][z] != states[x][y - 1][z]);
                 return true;
             case SOUTH:
-                if (z <= 14) return states[x][y][z + 1].isAir();
+                if (z <= 14) return states[x][y][z + 1].isAir() || (RenderLayers.getBlockLayer(states[x][y][z + 1]) != RenderLayer.getSolid() && states[x][y][z] != states[x][y][z + 1]);
                 return true;
             case NORTH:
-                if (z >= 1) return states[x][y][z - 1].isAir();
+                if (z >= 1) return states[x][y][z - 1].isAir() || (RenderLayers.getBlockLayer(states[x][y][z - 1]) != RenderLayer.getSolid() && states[x][y][z] != states[x][y][z - 1]);
                 return true;
             case EAST:
-                if (x <= 14) return states[x + 1][y][z].isAir();
+                if (x <= 14) return states[x + 1][y][z].isAir() || (RenderLayers.getBlockLayer(states[x + 1][y][z]) != RenderLayer.getSolid() && states[x][y][z] != states[x + 1][y][z]);
                 return true;
             case WEST:
-                if (x >= 1) return states[x - 1][y][z].isAir();
+                if (x >= 1) return states[x - 1][y][z].isAir() || (RenderLayers.getBlockLayer(states[x - 1][y][z]) != RenderLayer.getSolid() && states[x][y][z] != states[x - 1][y][z]);
                 return true;
         }
         return true;
@@ -175,7 +178,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                     for (Direction d : Direction.values()) {
                         for (BakedQuad vanillaQuad : MinecraftClient.getInstance().getBlockRenderManager().getModel(states[i][j][k]).getQuads(states[i][j][k], d, ThreadLocalRandom.current())) {
                             if (quadNeeded(d, i, j, k)) {
-                                MutableQuadView quad = emitter.fromVanilla(vanillaQuad, RendererAccess.INSTANCE.getRenderer().materialFinder().find(), d);
+                                MutableQuadView quad = emitter.fromVanilla(vanillaQuad, RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(states[i][j][k]))).find(), d);
                                 transform.transform(quad);
                                 if (canvas) {
                                     Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
@@ -185,7 +188,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                                 emitter = emitter.emit();
                             }
                         }
-                    }  
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 Fix Texture Rotations
 Fix Biome Colors
-Move Transparent Parts To A BER (More Correct But Slower, maybe add a config option?)
+Fix Colored Transparency
 Iron Chisel
 Fix Missing Particles Somehow?
+Custom Chisel Selection Highlight

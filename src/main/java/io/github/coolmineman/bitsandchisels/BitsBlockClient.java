@@ -3,12 +3,10 @@ package io.github.coolmineman.bitsandchisels;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
@@ -16,7 +14,6 @@ public class BitsBlockClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        BlockRenderLayerMap.INSTANCE.putBlock(BitsAndChisels.BITS_BLOCK, RenderLayer.getCutout());
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new BitsModelProvider());
         BitsAndChisels.DIAMOND_CHISEL.initClient();
     }
