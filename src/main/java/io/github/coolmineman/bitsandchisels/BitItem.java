@@ -41,7 +41,7 @@ public class BitItem extends Item {
                 World world = player.world;
                 if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 && !BitUtils.exists(BitUtils.getBit(world, pos, x, y, z))) {
                     ItemStack stack = player.getStackInHand(hand);
-                    if (BitUtils.setBit(world, pos, x, y, z, BitUtils.getBit(stack), true)) stack.decrement(1);
+                    if (BitUtils.setBit(world, pos, x, y, z, BitUtils.getBit(stack), true) && !player.isCreative()) stack.decrement(1);
                 }
             });
         });

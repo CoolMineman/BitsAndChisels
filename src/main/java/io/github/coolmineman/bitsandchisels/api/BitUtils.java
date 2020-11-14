@@ -2,8 +2,6 @@ package io.github.coolmineman.bitsandchisels.api;
 
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
-
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
 import net.minecraft.block.BlockState;
@@ -55,8 +53,8 @@ public class BitUtils {
         if (e1 instanceof BitsBlockEntity) {
             BitsBlockEntity e = (BitsBlockEntity) e1;
             return Optional.of(e.getState(x, y, z));
-        } else if (!state.isOf(BitsAndChisels.BITS_BLOCK)) {
-            if (state.isFullCube(world, block)) return Optional.of(state);
+        } else if (!state.isOf(BitsAndChisels.BITS_BLOCK) && state.isFullCube(world, block)) {
+            return Optional.of(state);
         }
         return Optional.empty();
     }

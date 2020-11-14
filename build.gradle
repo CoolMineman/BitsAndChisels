@@ -17,14 +17,17 @@ repositories {
     	url = "https://maven.dblsaiko.net/"
     }
     maven {
-      name = "Cotton"
-      url = "http://server.bbkr.space:8081/artifactory/libs-release/"
+        name = "Cotton"
+        url = "http://server.bbkr.space:8081/artifactory/libs-release/"
     }
     // REI, odds and ends
     maven {
-      name = "CurseForge"
-      url = "https://minecraft.curseforge.com/api/maven"
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven"
     }
+	maven {
+		url = 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/'
+	}
 }
 
 dependencies {
@@ -35,9 +38,11 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "grondag:canvas-mc116:1.0.+"
+	// modImplementation "grondag:canvas-mc116:1.0.+"
 	modImplementation("grondag:frex-mc116:4.0.+") { transitive = false }
 
+	// modImplementation("net.devtech:Stacc:1.0.0") { transitive = false }
+	// include "net.devtech:Stacc:1.0.0"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.

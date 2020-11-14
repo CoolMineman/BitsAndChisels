@@ -10,10 +10,16 @@ import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Pair;
 
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.ModelBakeSettings;
@@ -49,14 +55,24 @@ public class BitItemModel implements UnbakedModel, BakedModel, FabricBakedModel 
 	public static final Transformation TRANSFORM_BLOCK_FIXED = makeTransform(0, 0, 0, 0, 0, 0, 0.5f * 0.5f, 0.5f * 0.5f, 0.5f * 0.5f);
 	public static final Transformation TRANSFORM_BLOCK_3RD_PERSON_RIGHT = makeTransform(75, 45, 0, 0, 2.5f, 0, 0.375f * 0.5f, 0.375f * 0.5f, 0.375f * 0.5f);
 	public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_RIGHT = makeTransform(0, 45, 0, 0, 0, 0, 0.4f * 0.5f, 0.4f * 0.5f, 0.4f * 0.5f);
-	public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_LEFT = makeTransform(0, 225, 0, 0, 0, 0, 0.4f * 0.5f, 0.4f * 0.5f, 0.4f * 0.5f);
+    public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_LEFT = makeTransform(0, 225, 0, 0, 0, 0, 0.4f * 0.5f, 0.4f * 0.5f, 0.4f * 0.5f);
+    
+    private static BlockState transform_state;
+    private static final QuadTransform TRANSFORM = quad -> {
+        BlockColorProvider colorthing = ColorProviderRegistry.BLOCK.get(transform_state.getBlock());
+        if (colorthing != null) {
+            int color = 0xFF000000 | colorthing.getColor(transform_state, null, null, quad.colorIndex());
+            quad.spriteColor(0, color, color, color, color);
+        }
+        return true;
+    };
 
 	/**
-	 * Mimics the vanilla model transformation * 0.25 used for most vanilla blocks,
+	 * Mimics the vanilla model transformation * 0.5 used for most vanilla blocks,
 	 */
     public static final ModelTransformation MODEL_TRANSFORM_BLOCK = new ModelTransformation(TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_1ST_PERSON_LEFT, TRANSFORM_BLOCK_1ST_PERSON_RIGHT, Transformation.IDENTITY, TRANSFORM_BLOCK_GUI, TRANSFORM_BLOCK_GROUND, TRANSFORM_BLOCK_FIXED);
     
-    private static LRUCache<CompoundTag, FabricBakedModel> cache = new LRUCache<>(200);
+    private static LRUCache<CompoundTag, BlockState> cache = new LRUCache<>(200);
 
     @Override
     public boolean isVanillaAdapter() {
@@ -72,12 +88,16 @@ public class BitItemModel implements UnbakedModel, BakedModel, FabricBakedModel 
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        cache.computeIfAbsent(stack.getTag(), tag -> (FabricBakedModel) MinecraftClient.getInstance().getBlockRenderManager().getModel(NbtHelper.toBlockState(stack.getSubTag("bit")))).emitItemQuads(stack, randomSupplier, context);
+        transform_state = cache.computeIfAbsent(stack.getTag(), tag -> NbtHelper.toBlockState(stack.getSubTag("bit")));
+        context.pushTransform(TRANSFORM);
+        context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(transform_state));
+        context.popTransform();
     }
 
     @Override
     public List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
-        throw new RuntimeException("Your renderer doesn't support Fabric rendering API. Get one that does, I recommend canvas or indigo.");
+        BitsAndChisels.LOGGER.warn("BakedModel.getQuads was just called, this likely means your renderer doesn't support Fabric rendering API. In that case get one that does, I recommend canvas or indigo.");
+        return Collections.emptyList();
     }
 
     @Override

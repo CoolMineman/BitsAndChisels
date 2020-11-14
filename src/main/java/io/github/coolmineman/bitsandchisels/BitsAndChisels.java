@@ -1,8 +1,10 @@
 package io.github.coolmineman.bitsandchisels;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.github.coolmineman.bitsandchisels.chisel.DiamondChisel;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
@@ -13,11 +15,13 @@ import net.minecraft.util.registry.Registry;
 
 public class BitsAndChisels implements ModInitializer {
 
+	public static final Logger LOGGER = LogManager.getLogger("BitsAndChisels");
+
 	public static final BitsBlock BITS_BLOCK = new BitsBlock(FabricBlockSettings.of(Material.METAL).nonOpaque().hardness(4.0f));
 	public static final DiamondChisel DIAMOND_CHISEL = new DiamondChisel(new Item.Settings());
 	public static BlockEntityType<BitsBlockEntity> BITS_BLOCK_ENTITY;
 
-	public static final BitItem BIT_ITEM = new BitItem(new FabricItemSettings());
+	public static final BitItem BIT_ITEM = new BitItem(new Item.Settings());
 
 	@Override
 	public void onInitialize() {
