@@ -60,7 +60,7 @@ public class BitUtils {
     }
 
     public static boolean exists(Optional<BlockState> bit) {
-        return bit.isPresent() ? !bit.get().isAir() : false;
+        return bit.isPresent() && !bit.get().isAir();
     }
 
     public static ItemStack getBitItemStack(BlockState state) {
