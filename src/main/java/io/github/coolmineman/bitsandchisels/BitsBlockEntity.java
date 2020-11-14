@@ -8,6 +8,7 @@ import grondag.frex.api.material.MaterialMap;
 import grondag.frex.api.material.RenderMaterial;
 import io.github.coolmineman.bitsandchisels.mixin.SimpleVoxelShapeFactory;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -15,10 +16,12 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
+import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl.ColorMapperHolder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.model.BakedQuad;
@@ -173,28 +176,36 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
+                    BlockState state = states[i][j][k];
+
                     transform.x = i;
                     transform.y = j;
                     transform.z = k;
 
                     for (Direction d : Direction.values()) {
-                        for (BakedQuad vanillaQuad : MinecraftClient.getInstance().getBlockRenderManager().getModel(states[i][j][k]).getQuads(states[i][j][k], d, ThreadLocalRandom.current())) {
+                        for (BakedQuad vanillaQuad : MinecraftClient.getInstance().getBlockRenderManager().getModel(state).getQuads(state, d, ThreadLocalRandom.current())) {
                             if (quadNeeded(d, i, j, k)) {
                                 MutableQuadView quad;
                                 if (canvas) {
                                     quad = emitter.fromVanilla(vanillaQuad, RendererAccess.INSTANCE.getRenderer().materialFinder().find(), d); //RenderLayer Comes Later
                                 } else {
-                                    quad = emitter.fromVanilla(vanillaQuad, RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(states[i][j][k]))).find(), d);
+                                    quad = emitter.fromVanilla(vanillaQuad, RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state))).find(), d);
                                 }
                                 transform.transform(quad);
                                 if (canvas) {
                                     Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
-                                    RenderMaterial material = (RenderMaterial) MaterialMap.get(states[i][j][k]).getMapped(sprite);
+                                    RenderMaterial material = (RenderMaterial) MaterialMap.get(state).getMapped(sprite);
                                     if (material != null) {
-                                        quad.material(((Renderer) RendererAccess.INSTANCE.getRenderer()).materialFinder().copyFrom(material).blendMode(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(states[i][j][k]))).find());
+                                        quad.material(((Renderer) RendererAccess.INSTANCE.getRenderer()).materialFinder().copyFrom(material).blendMode(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state))).find());
                                     } else {
                                         quad.material(((Renderer) RendererAccess.INSTANCE.getRenderer()).materialFinder().blendMode(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(states[i][j][k]))).find());
                                     }
+                                }
+                                if (vanillaQuad.hasColor()) {
+                                    int color = 0xFF000000 | ColorProviderRegistry.BLOCK.get(state.getBlock()).getColor(state, world, pos, vanillaQuad.getColorIndex());
+                                    // color = BiomeColors.getGrassColor(world, pos);
+                                    quad.spriteColor(0, color, color, color, color);
+                                    // quad.spriteColor(0, 0, color);
                                 }
                                 quad.cullFace(null);
                                 emitter = emitter.emit();

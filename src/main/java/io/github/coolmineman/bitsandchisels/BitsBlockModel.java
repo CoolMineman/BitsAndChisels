@@ -81,7 +81,7 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     @Override
     public List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
-        return Collections.emptyList();
+        throw new RuntimeException("Your renderer doesn't support Fabric rendering API. Get one that does, I recommend canvas or indigo.");
     }
 
     @Override
