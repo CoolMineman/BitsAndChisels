@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 public class BitUtils {
     private BitUtils(){}
 
-    public static boolean setBit(World world, BlockPos block, int x, int y, int z, BlockState state, boolean updateclients) {
+    public static boolean setBit(World world, BlockPos block, int x, int y, int z, BlockState state) {
         BlockState target_state = world.getBlockState(block);
         BlockEntity e1 = world.getBlockEntity(block);
         if (target_state.isAir()) {
@@ -27,13 +27,18 @@ public class BitUtils {
         if (e1 instanceof BitsBlockEntity) {
             BitsBlockEntity e = (BitsBlockEntity) e1;
             e.setState(x, y, z, state);
-            e.rebuild(false);
-            if (updateclients) {
-                e.sync();
-            }
             return true;
         }
         return false;
+    }
+
+    public static void update(World world, BlockPos block) {
+        BlockEntity e1 = world.getBlockEntity(block);
+        if (e1 instanceof BitsBlockEntity) {
+            BitsBlockEntity e = (BitsBlockEntity) e1;
+            e.rebuild(false);
+            e.sync();
+        }
     }
 
     public static boolean canPlace(World world, BlockPos block, int x, int y, int z) {

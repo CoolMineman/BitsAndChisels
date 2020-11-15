@@ -33,7 +33,6 @@ public class DiamondChisel extends ToolItem {
 
     public void init() {
         ServerSidePacketRegistry.INSTANCE.register(PACKET_ID, (packetContext, attachedData) -> {
-            // Get the BlockPos we put earlier in the IO thread
             BlockPos pos = attachedData.readBlockPos();
             int x = attachedData.readInt();
             int y = attachedData.readInt();
@@ -44,8 +43,8 @@ public class DiamondChisel extends ToolItem {
                 World world = player.world;
                 if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
                     Optional<BlockState> oldstate = BitUtils.getBit(world, pos, x, y, z);
-                    if (oldstate.isPresent()) {
-                        BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState(), true);
+                    if (oldstate.isPresent() && BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState())) {
+                        BitUtils.update(world, pos);
                         if (!oldstate.get().isAir()) player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate.get()));
                     }
                 }
