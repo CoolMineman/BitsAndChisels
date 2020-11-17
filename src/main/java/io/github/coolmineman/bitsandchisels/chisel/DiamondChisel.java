@@ -2,7 +2,9 @@ package io.github.coolmineman.bitsandchisels.chisel;
 
 import java.util.Optional;
 
+import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
+import io.github.coolmineman.bitsandchisels.api.client.RedBoxCallback;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -59,6 +61,20 @@ public class DiamondChisel extends ToolItem {
                 return ((DiamondChisel)i).interactBreakBlockClient(player, world, pos);
             }
             return ActionResult.PASS;
+        });
+        RedBoxCallback.EVENT.register((redBoxDrawer, matrixStack, vertexConsumer, worldoffsetx, worldoffsety, worldoffsetz) -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client.player.getMainHandStack().getItem() == BitsAndChisels.DIAMOND_CHISEL) {
+                HitResult hit = client.crosshairTarget;
+                if (hit.getType() == HitResult.Type.BLOCK) {
+                    Direction direction = ((BlockHitResult)hit).getSide();
+                    BlockPos pos = ((BlockHitResult)hit).getBlockPos();
+                    int x = (int) Math.floor(((hit.getPos().getX() - pos.getX()) * 16) + (direction.getOffsetX() * -0.5d));
+                    int y = (int) Math.floor(((hit.getPos().getY() - pos.getY()) * 16) + (direction.getOffsetY() * -0.5d));
+                    int z = (int) Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d));
+                    redBoxDrawer.drawRedBox(matrixStack, vertexConsumer, pos, x, y, z, worldoffsetx, worldoffsety, worldoffsetz);
+                }
+            }
         });
     }
 

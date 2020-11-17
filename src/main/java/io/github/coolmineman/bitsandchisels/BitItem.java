@@ -1,6 +1,7 @@
 package io.github.coolmineman.bitsandchisels;
 
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
+import io.github.coolmineman.bitsandchisels.api.client.RedBoxCallback;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -46,6 +47,49 @@ public class BitItem extends Item {
                     if (b) BitUtils.update(world, pos);
                 }
             });
+        });
+    }
+
+    public void initClient() {
+        RedBoxCallback.EVENT.register((redBoxDrawer, matrixStack, vertexConsumer, worldoffsetx, worldoffsety, worldoffsetz) -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client.player.getMainHandStack().getItem() == BitsAndChisels.BIT_ITEM) {
+                HitResult hit = client.crosshairTarget;
+                if (hit.getType() == HitResult.Type.BLOCK) {
+                    Direction direction = ((BlockHitResult)hit).getSide();
+                    BlockPos pos = ((BlockHitResult)hit).getBlockPos();
+                    int x = ((int) Math.floor(((hit.getPos().getX() - pos.getX()) * 16) + (direction.getOffsetX() * -0.5d))) + direction.getOffsetX();
+                    int y = ((int) Math.floor(((hit.getPos().getY() - pos.getY()) * 16) + (direction.getOffsetY() * -0.5d))) + direction.getOffsetY();
+                    int z = ((int) Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d))) + direction.getOffsetZ();
+
+                    if (x > 15) {
+                        pos = pos.add(1, 0, 0);
+                        x -= 16;
+                    }
+                    if (y > 15) {
+                        pos = pos.add(0, 1, 0);
+                        y -= 16;
+                    }
+                    if (z > 15) {
+                        pos = pos.add(0, 0, 1);
+                        z -= 16;
+                    }
+                    if (x < 0) {
+                        pos = pos.add(-1, 0, 0);
+                        x += 16;
+                    }
+                    if (y < 0) {
+                        pos = pos.add(0, -1, 0);
+                        y += 16;
+                    }
+                    if (z < 0) {
+                        pos = pos.add(0, 0, -1);
+                        z += 16;
+                    }
+
+                    redBoxDrawer.drawRedBox(matrixStack, vertexConsumer, pos, x, y, z, worldoffsetx, worldoffsety, worldoffsetz);
+                }
+            }
         });
     }
 
