@@ -43,6 +43,7 @@ public class BitItem extends Item {
                     ItemStack stack = player.getStackInHand(hand);
                     boolean b = BitUtils.setBit(world, pos, x, y, z, BitUtils.getBit(stack));
                     if (b && !player.isCreative()) stack.decrement(1);
+                    if (b) BitUtils.update(world, pos);
                 }
             });
         });
