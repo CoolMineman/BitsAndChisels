@@ -23,7 +23,7 @@ public class BitsAndChisels implements ModInitializer {
 	public static final IronChisel IRON_CHISEL = new IronChisel(new Item.Settings());
 	public static BlockEntityType<BitsBlockEntity> BITS_BLOCK_ENTITY;
 
-	public static final BitItem BIT_ITEM = new BitItem(new Item.Settings());
+	public static final BitItem BIT_ITEM = new BitItem(new Item.Settings().maxCount(1_000_000_000));
 
 	@Override
 	public void onInitialize() {
