@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.github.coolmineman.bitsandchisels.chisel.DiamondChisel;
+import io.github.coolmineman.bitsandchisels.chisel.IronChisel;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Material;
@@ -19,6 +20,7 @@ public class BitsAndChisels implements ModInitializer {
 
 	public static final BitsBlock BITS_BLOCK = new BitsBlock(FabricBlockSettings.of(Material.METAL).nonOpaque().hardness(4.0f));
 	public static final DiamondChisel DIAMOND_CHISEL = new DiamondChisel(new Item.Settings());
+	public static final IronChisel IRON_CHISEL = new IronChisel(new Item.Settings());
 	public static BlockEntityType<BitsBlockEntity> BITS_BLOCK_ENTITY;
 
 	public static final BitItem BIT_ITEM = new BitItem(new Item.Settings());
@@ -33,6 +35,8 @@ public class BitsAndChisels implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("bitsandchisels", "bits_block"), new BlockItem(BITS_BLOCK, new Item.Settings()));
 		Registry.register(Registry.ITEM, new Identifier("bitsandchisels", "diamond_chisel"), DIAMOND_CHISEL);
 		DIAMOND_CHISEL.init();
+		Registry.register(Registry.ITEM, new Identifier("bitsandchisels", "iron_chisel"), IRON_CHISEL);
+		IRON_CHISEL.init();
 		Registry.register(Registry.ITEM, new Identifier("bitsandchisels", "bit_item"), BIT_ITEM);
 		BIT_ITEM.init();
 	}

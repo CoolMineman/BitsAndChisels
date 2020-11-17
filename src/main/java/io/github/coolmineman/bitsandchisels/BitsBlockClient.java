@@ -16,6 +16,7 @@ public class BitsBlockClient implements ClientModInitializer {
     public void onInitializeClient() {
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new BitsModelProvider());
         BitsAndChisels.DIAMOND_CHISEL.initClient();
+        BitsAndChisels.IRON_CHISEL.initClient();
         BitsAndChisels.BIT_ITEM.initClient();
     }
 
