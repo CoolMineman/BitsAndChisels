@@ -1,4 +1,6 @@
-# Fabric Example Mod
+# Bits And Chisels
+
+[https://github.com/CoolMineman/BitsAndChisels](https://github.com/CoolMineman/BitsAndChisels)
 
 ## Setup
 

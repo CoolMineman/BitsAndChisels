@@ -4,13 +4,13 @@
   "version": "${version}",
 
   "name": "BitsAndChisels",
-  "description": "BitsAndChisels BitsAndChisels BitsAndChisels",
+  "description": "Turn Blocks Into Small Bits With Chisels; Build All The Things",
   "authors": [
     "cool_mineman"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://github.com/CoolMineman/BitsAndChisels",
+    "sources": "https://github.com/CoolMineman/BitsAndChisels"
   },
 
   "license": "CC0-1.0",
@@ -32,9 +32,6 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": "1.16.x"
-  },
-  "suggests": {
-    "flamingo": "*"
+    "minecraft": ">1.16.1"
   }
 }
