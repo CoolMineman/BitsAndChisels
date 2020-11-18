@@ -79,6 +79,6 @@ public class BitUtils {
     }
 
     public static boolean canChisel(BlockState state, World world, BlockPos pos) {
-        return state.getHardness(world, pos) <= 100 && state.getHardness(world, pos) >= 100;
+        return state.getHardness(world, pos) <= 100 && state.getHardness(world, pos) >= 0;
     }
 }
