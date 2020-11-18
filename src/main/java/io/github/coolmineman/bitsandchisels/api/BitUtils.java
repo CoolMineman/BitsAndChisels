@@ -58,7 +58,7 @@ public class BitUtils {
         if (e1 instanceof BitsBlockEntity) {
             BitsBlockEntity e = (BitsBlockEntity) e1;
             return Optional.of(e.getState(x, y, z));
-        } else if (!state.isOf(BitsAndChisels.BITS_BLOCK) && state.isFullCube(world, block)) {
+        } else if (!state.isOf(BitsAndChisels.BITS_BLOCK) && canChisel(state, world, block) && state.isFullCube(world, block)) {
             return Optional.of(state);
         }
         return Optional.empty();
@@ -76,5 +76,9 @@ public class BitUtils {
 
     public static BlockState getBit(ItemStack stack) {
         return NbtHelper.toBlockState(stack.getSubTag("bit"));
+    }
+
+    public static boolean canChisel(BlockState state, World world, BlockPos pos) {
+        return state.getHardness(world, pos) <= 100 && state.getHardness(world, pos) >= 100;
     }
 }
