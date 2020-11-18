@@ -14,6 +14,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.network.PacketByteBuf;
@@ -43,7 +44,8 @@ public class DiamondChisel extends ToolItem {
                 // Execute on the main thread
                 PlayerEntity player = packetContext.getPlayer();
                 World world = player.world;
-                if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
+                ItemStack stack = player.getMainHandStack();
+                if (world.canSetBlock(pos) && stack.getItem() == BitsAndChisels.DIAMOND_CHISEL && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
                     Optional<BlockState> oldstate = BitUtils.getBit(world, pos, x, y, z);
                     if (oldstate.isPresent() && BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState())) {
                         BitUtils.update(world, pos);

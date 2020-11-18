@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "IS"
+    ],
+    "key": {
+      "I": {
+        "item": "minecraft:diamond"
+      },
+      "S": {
+        "item": "minecraft:stick"
+      }
+    },
+    "result": {
+      "item": "bitsandchisels:diamond_chisel",
+      "count": 1
+    }
+  }
+

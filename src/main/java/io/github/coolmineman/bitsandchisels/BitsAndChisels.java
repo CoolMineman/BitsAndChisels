@@ -6,11 +6,14 @@ import org.apache.logging.log4j.Logger;
 import io.github.coolmineman.bitsandchisels.chisel.DiamondChisel;
 import io.github.coolmineman.bitsandchisels.chisel.IronChisel;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -24,6 +27,16 @@ public class BitsAndChisels implements ModInitializer {
 	public static BlockEntityType<BitsBlockEntity> BITS_BLOCK_ENTITY;
 
 	public static final BitItem BIT_ITEM = new BitItem(new Item.Settings().maxCount(1_000_000_000));
+
+	public static final ItemGroup OTHER_GROUP = FabricItemGroupBuilder.create(
+		new Identifier("bitsandchisels", "bitsandchisels"))
+		.icon(() -> new ItemStack(DIAMOND_CHISEL))
+		.appendItems(stacks -> {
+			stacks.add(new ItemStack(DIAMOND_CHISEL));
+			stacks.add(new ItemStack(IRON_CHISEL));
+		}
+	)
+	.build();
 
 	@Override
 	public void onInitialize() {
