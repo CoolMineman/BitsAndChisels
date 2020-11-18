@@ -5,12 +5,16 @@ import io.github.coolmineman.bitsandchisels.api.client.RedBoxCallback;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -144,6 +148,12 @@ public class BitItem extends Item {
             
         }
         return ActionResult.PASS;
+    }
+
+    @Override
+    public Text getName(ItemStack stack) {
+        BlockState state = NbtHelper.toBlockState(stack.getSubTag("bit"));
+        return new TranslatableText(this.getTranslationKey(stack), state.getBlock().getName());
     }
     
 }

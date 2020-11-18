@@ -109,7 +109,7 @@ public class BitItemModel implements UnbakedModel, BakedModel, FabricBakedModel 
 
     @Override
     public boolean isSideLit() {
-        return false;
+        return true;
     }
 
     @Override
