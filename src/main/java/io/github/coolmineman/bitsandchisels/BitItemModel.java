@@ -85,6 +85,7 @@ public class BitItemModel implements UnbakedModel, BakedModel, FabricBakedModel 
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        if (!stack.hasTag() || stack.getSubTag("bit") == null) return;
         transform_state = cache.computeIfAbsent(stack.getTag(), tag -> NbtHelper.toBlockState(stack.getSubTag("bit")));
         context.pushTransform(TRANSFORM);
         context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(transform_state));
