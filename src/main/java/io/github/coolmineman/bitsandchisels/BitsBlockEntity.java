@@ -43,7 +43,6 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     @Environment(EnvType.CLIENT)
     protected Mesh mesh;
     protected VoxelShape shape = VoxelShapes.fullCube();
-    private BitTransform transform = new BitTransform();
     boolean fullcube = false;
 
     public BitsBlockEntity() {
@@ -173,6 +172,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
         QuadEmitter emitter = builder.getEmitter();
+        BitTransform transform = new BitTransform();
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
