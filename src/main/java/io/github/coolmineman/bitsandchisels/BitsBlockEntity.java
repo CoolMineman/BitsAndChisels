@@ -7,6 +7,8 @@ import grondag.frex.api.Renderer;
 import grondag.frex.api.material.MaterialMap;
 import grondag.frex.api.material.RenderMaterial;
 import io.github.coolmineman.bitsandchisels.mixin.SimpleVoxelShapeFactory;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -38,6 +40,7 @@ import net.minecraft.util.shape.VoxelShapes;
 public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
 
     private BlockState[][][] states = new BlockState[16][16][16];
+    @Environment(EnvType.CLIENT)
     protected Mesh mesh;
     protected VoxelShape shape = VoxelShapes.fullCube();
     private BitTransform transform = new BitTransform();
@@ -110,13 +113,11 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         states[x][y][z] = state;
     }
 
-    public void rebuild(boolean client) {
-        if (client) rebuildMesh();
+    public void rebuildServer() {
         rebuildShape();
-        if (!client && fullcube) {
+        if (fullcube) {
             world.setBlockState(pos, states[0][0][0]);
         }
-        if (client) MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     public BlockState getState(int x, int y, int z) {
@@ -167,6 +168,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         shape = SimpleVoxelShapeFactory.getSimpleVoxelShape(set);
     }
 
+    @Environment(EnvType.CLIENT)
     protected void rebuildMesh() {
         boolean canvas = RendererAccess.INSTANCE.getRenderer().getClass().getName().equals("grondag.canvas.apiimpl.Canvas");
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();

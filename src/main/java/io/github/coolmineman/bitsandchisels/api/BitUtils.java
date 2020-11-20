@@ -36,7 +36,7 @@ public class BitUtils {
         BlockEntity e1 = world.getBlockEntity(block);
         if (e1 instanceof BitsBlockEntity) {
             BitsBlockEntity e = (BitsBlockEntity) e1;
-            e.rebuild(false);
+            e.rebuildServer();
             e.sync();
         }
     }
