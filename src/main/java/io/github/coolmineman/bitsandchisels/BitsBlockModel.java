@@ -87,7 +87,7 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     @Override
     public boolean useAmbientOcclusion() {
-        return false;
+        return true;
     }
 
     @Override
