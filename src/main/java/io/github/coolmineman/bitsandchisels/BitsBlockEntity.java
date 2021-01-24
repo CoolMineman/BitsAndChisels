@@ -3,6 +3,8 @@ package io.github.coolmineman.bitsandchisels;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.jetbrains.annotations.Nullable;
+
 import grondag.frex.api.Renderer;
 import grondag.frex.api.material.MaterialMap;
 import grondag.frex.api.material.RenderMaterial;
@@ -18,6 +20,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -37,7 +40,7 @@ import net.minecraft.util.shape.BitSetVoxelSet;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
-public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
+public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity {
 
     private BlockState[][][] states = new BlockState[16][16][16];
     @Environment(EnvType.CLIENT)
@@ -231,5 +234,11 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     public CompoundTag toClientTag(CompoundTag tag) {
         return toTag(tag);
     }
+
+    @Environment(EnvType.CLIENT)
+	@Override
+	public @Nullable Object getRenderAttachmentData() {
+		return mesh;
+	}
 
 }

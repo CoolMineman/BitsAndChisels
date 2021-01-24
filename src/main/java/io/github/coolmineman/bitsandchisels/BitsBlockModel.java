@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -41,8 +42,8 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-        BitsBlockEntity e = (BitsBlockEntity) blockView.getBlockEntity(pos);
-        if (e != null && e.mesh != null) context.meshConsumer().accept(e.mesh);
+        Object mesh = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
+        if (mesh instanceof Mesh) context.meshConsumer().accept((Mesh) mesh);
     }
 
     @Override
