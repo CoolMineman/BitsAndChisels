@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 public class IronChisel extends ToolItem {
 
     public static final Identifier PACKET_ID = new Identifier("bitsandchisels", "iron_chisel_packet");
+    private long lastBreakTick = 0;
 
     public IronChisel(Settings settings) {
         super(ToolMaterials.STONE, settings);
@@ -93,6 +94,7 @@ public class IronChisel extends ToolItem {
     }
 
     public ActionResult interactBreakBlockClient(PlayerEntity player, World world, BlockPos pos) {
+        if (player.world.getTime() - lastBreakTick < 5) return ActionResult.CONSUME;
         MinecraftClient client = MinecraftClient.getInstance();
         HitResult hit = client.crosshairTarget;
 
@@ -108,10 +110,11 @@ public class IronChisel extends ToolItem {
                 passedData.writeInt(y);
                 passedData.writeInt(z);
                 ClientSidePacketRegistry.INSTANCE.sendToServer(PACKET_ID, passedData);
+                lastBreakTick = player.world.getTime();
                 return ActionResult.SUCCESS;
             }
         }
-        return ActionResult.PASS;
+        return ActionResult.CONSUME;
     }
     
 }

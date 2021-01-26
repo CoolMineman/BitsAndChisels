@@ -29,6 +29,8 @@ import net.minecraft.world.World;
 public class DiamondChisel extends ToolItem {
 
     public static final Identifier PACKET_ID = new Identifier("bitsandchisels", "diamond_chisel_packet");
+    private long lastBreakTick = 0;
+    private boolean fastBreak = false;
 
     public DiamondChisel(Settings settings) {
         super(ToolMaterials.STONE, settings);
@@ -81,6 +83,7 @@ public class DiamondChisel extends ToolItem {
     }
 
     public ActionResult interactBreakBlockClient(PlayerEntity player, World world, BlockPos pos) {
+        if (player.world.getTime() - lastBreakTick < (fastBreak ? 3 : 6)) return ActionResult.CONSUME;
         MinecraftClient client = MinecraftClient.getInstance();
         HitResult hit = client.crosshairTarget;
 
@@ -96,10 +99,12 @@ public class DiamondChisel extends ToolItem {
                 passedData.writeInt(y);
                 passedData.writeInt(z);
                 ClientSidePacketRegistry.INSTANCE.sendToServer(PACKET_ID, passedData);
+                fastBreak = player.world.getTime() - lastBreakTick < 10;
+                lastBreakTick = player.world.getTime();
                 return ActionResult.SUCCESS;
             }
         }
-        return ActionResult.PASS;
+        return ActionResult.CONSUME;
     }
     
 }
