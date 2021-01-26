@@ -41,6 +41,7 @@ public class BitsAndChisels implements ModInitializer {
 			stacks.add(new ItemStack(DIAMOND_CHISEL));
 			stacks.add(new ItemStack(IRON_CHISEL));
 			stacks.add(new ItemStack(WRENCH_ITEM));
+			stacks.add(new ItemStack(BLUEPRINT));
 		}
 	)
 	.build();

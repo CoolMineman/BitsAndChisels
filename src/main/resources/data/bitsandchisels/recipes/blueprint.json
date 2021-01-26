@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      " B ",
+      "BPB",
+      " B "
+    ],
+    "key": {
+      "B": {
+        "item": "minecraft:lapis_lazuli"
+      },
+      "P": {
+        "item": "minecraft:paper"
+      }
+    },
+    "result": {
+      "item": "bitsandchisels:blueprint",
+      "count": 1
+    }
+  }
+
