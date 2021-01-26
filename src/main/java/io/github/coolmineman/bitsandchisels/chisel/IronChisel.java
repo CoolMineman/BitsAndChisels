@@ -3,6 +3,7 @@ package io.github.coolmineman.bitsandchisels.chisel;
 import java.util.Optional;
 
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
+import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
 import io.github.coolmineman.bitsandchisels.api.client.RedBoxCallback;
 import io.netty.buffer.Unpooled;
@@ -103,7 +104,7 @@ public class IronChisel extends ToolItem {
             int x = (int) Math.floor(Math.floor(((hit.getPos().getX() - pos.getX()) * 16) + (direction.getOffsetX() * -0.5d)) / 4) * 4;
             int y = (int) Math.floor(Math.floor(((hit.getPos().getY() - pos.getY()) * 16) + (direction.getOffsetY() * -0.5d)) / 4) * 4;
             int z = (int) Math.floor(Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d)) / 4) * 4;
-            if (BitUtils.exists(BitUtils.getBit(world, pos, x, y, z))) {
+            if (world.getBlockEntity(pos) instanceof BitsBlockEntity) {
                 PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
                 passedData.writeBlockPos(pos);
                 passedData.writeInt(x);
