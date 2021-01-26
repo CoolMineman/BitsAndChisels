@@ -42,7 +42,7 @@ import net.minecraft.util.shape.VoxelShapes;
 
 public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity {
 
-    private BlockState[][][] states = new BlockState[16][16][16];
+    private BlockState[][][] states;
     @Environment(EnvType.CLIENT)
     protected Mesh mesh;
     protected VoxelShape shape = VoxelShapes.fullCube();
@@ -52,62 +52,33 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         this(Blocks.AIR.getDefaultState());
     }
 
-    public BitsBlockEntity(BlockState state) {
-        super(BitsAndChisels.BITS_BLOCK_ENTITY);
+    public BitsBlockEntity(BlockState fillState) {
+        this(new BlockState[16][16][16]);
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
-                    states[i][j][k] = state;
+                    states[i][j][k] = fillState;
                 }
             }
         }
     }
 
+    public BitsBlockEntity(BlockState[][][] states) {
+        super(BitsAndChisels.BITS_BLOCK_ENTITY);
+        this.states = states;
+    }
+
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
-        ArrayList<BlockState> palette = new ArrayList<>();
-        ListTag bits = new ListTag();
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 16; j++) {
-                for (int k = 0; k < 16; k++) {
-                    BlockState state = states[i][j][k];
-                    short index = (short) palette.indexOf(state);
-                    if (index == -1) {
-                        palette.add(state);
-                        index = (short) (palette.size() - 1);
-                    }
-                    bits.add(ShortTag.of(index));
-                }
-            }
-        }
-        tag.put("bits", bits);
-        ListTag pallette_tag = new ListTag();
-        for (BlockState state : palette) {
-            pallette_tag.add(NbtHelper.fromBlockState(state));
-        }
-        tag.put("palette", pallette_tag);
+        BitNbtUtil.write3DBitArray(tag, states);
         return tag;
     }
 
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
-        ArrayList<BlockState> palette = new ArrayList<>();
-        ListTag pallette_tag = (ListTag) tag.get("palette");
-        for (Tag statetag : pallette_tag) {
-            palette.add(NbtHelper.toBlockState((CompoundTag) statetag));
-        }
-        ListTag bits = (ListTag) tag.get("bits");
-        int index = 0;
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 16; j++) {
-                for (int k = 0; k < 16; k++) {
-                    states[i][j][k] = palette.get(bits.getShort(index));
-                    index++;
-                }
-            }
-        }
+        BitNbtUtil.read3DBitArray(tag, states);
         rebuildShape();
     }
 
@@ -131,6 +102,10 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
 
     public BlockState getState(int x, int y, int z) {
         return states[x][y][z];
+    }
+
+    public BlockState[][][] getStates() {
+        return states;
     }
 
     public boolean quadNeeded(Direction d, int x, int y, int z) {

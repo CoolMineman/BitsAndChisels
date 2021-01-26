@@ -4,5 +4,7 @@
     "item.bitsandchisels.diamond_chisel": "Simple Diamond Chisel",
     "item.bitsandchisels.iron_chisel": "Simple Iron Chisel",
     "item.bitsandchisels.wrench": "Wrench (Bits And Chisels)",
+    "item.bitsandchisels.blueprint.unwritten": "Blueprint (Unwritten)",
+    "item.bitsandchisels.blueprint": "Blueprint",
     "block.bitsandchisels.bits_block": "Bit Collection Block"
 }

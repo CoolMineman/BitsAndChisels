@@ -3,6 +3,7 @@ package io.github.coolmineman.bitsandchisels;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.github.coolmineman.bitsandchisels.blueprints.Blueprint;
 import io.github.coolmineman.bitsandchisels.chisel.DiamondChisel;
 import io.github.coolmineman.bitsandchisels.chisel.IronChisel;
 import io.github.coolmineman.bitsandchisels.wrench.WrenchItem;
@@ -28,12 +29,13 @@ public class BitsAndChisels implements ModInitializer {
 	public static final DiamondChisel DIAMOND_CHISEL = new DiamondChisel(new Item.Settings());
 	public static final IronChisel IRON_CHISEL = new IronChisel(new Item.Settings());
 	public static final WrenchItem WRENCH_ITEM = new WrenchItem(new Item.Settings());
+	public static final Blueprint BLUEPRINT = new Blueprint(new Item.Settings().maxCount(1));
 	public static BlockEntityType<BitsBlockEntity> BITS_BLOCK_ENTITY;
 
 	public static final BitItem BIT_ITEM = new BitItem(new Item.Settings().maxCount(1_000_000_000));
 
 	public static final ItemGroup OTHER_GROUP = FabricItemGroupBuilder.create(
-		new Identifier(MODID, "bitsandchisels"))
+		new Identifier(MODID, MODID))
 		.icon(() -> new ItemStack(DIAMOND_CHISEL))
 		.appendItems(stacks -> {
 			stacks.add(new ItemStack(DIAMOND_CHISEL));
@@ -58,6 +60,7 @@ public class BitsAndChisels implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier(MODID, "bit_item"), BIT_ITEM);
 		BIT_ITEM.init();
 		Registry.register(Registry.ITEM, new Identifier(MODID, "wrench"), WRENCH_ITEM);
+		Registry.register(Registry.ITEM, new Identifier(MODID, "blueprint"), BLUEPRINT);
 	}
 	
 }
