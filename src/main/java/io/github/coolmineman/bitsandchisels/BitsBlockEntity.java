@@ -115,6 +115,13 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         states[x][y][z] = state;
     }
 
+    /**
+     * Used to replace the backing array, don't call this w/o a good reason.
+     */
+    public void setStates(BlockState[][][] states) {
+        this.states = states;
+    }
+
     public void rebuildServer() {
         rebuildShape();
         if (fullcube) {

@@ -3,5 +3,6 @@
     "item.bitsandchisels.bit_item": "%s Bit",
     "item.bitsandchisels.diamond_chisel": "Simple Diamond Chisel",
     "item.bitsandchisels.iron_chisel": "Simple Iron Chisel",
+    "item.bitsandchisels.wrench": "Wrench (Bits And Chisels)",
     "block.bitsandchisels.bits_block": "Bit Collection Block"
 }
