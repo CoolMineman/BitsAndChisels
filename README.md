@@ -1,5 +1,5 @@
 # Bits And Chisels
-
+![Java CI with Gradle](https://github.com/CoolMineman/BitsAndChisels/workflows/Java%20CI%20with%20Gradle/badge.svg)
 [https://github.com/CoolMineman/BitsAndChisels](https://github.com/CoolMineman/BitsAndChisels)
 
 ## Setup
