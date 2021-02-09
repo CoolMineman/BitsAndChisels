@@ -34,6 +34,7 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+	maven { url "https://maven.shedaniel.me/" }
 }
 
 dependencies {
@@ -46,6 +47,8 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "grondag:canvas-mc116:1.0.+"
 	modImplementation("grondag:frex-mc116:4.0.+") { transitive = false }
+
+	modImplementation "me.shedaniel:RoughlyEnoughItems-api:5.9.171"
 
 	modImplementation("net.devtech:Stacc:1.0.1") { transitive = false }
 	include "net.devtech:Stacc:1.0.1"

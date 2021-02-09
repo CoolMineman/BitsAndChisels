@@ -23,6 +23,9 @@
     ],
     "client": [
       "io.github.coolmineman.bitsandchisels.BitsBlockClient"
+    ],
+    "rei_plugins": [
+      "io.github.coolmineman.bitsandchisels.tellreistopbad.TellReiStopBad"
     ]
   },
   "mixins": [

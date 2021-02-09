@@ -6,6 +6,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -152,7 +153,7 @@ public class BitItem extends Item {
 
     @Override
     public Text getName(ItemStack stack) {
-        BlockState state = NbtHelper.toBlockState(stack.getSubTag("bit"));
+        BlockState state = stack.getSubTag("bit") != null ? NbtHelper.toBlockState(stack.getSubTag("bit")) : Blocks.AIR.getDefaultState();
         return new TranslatableText(this.getTranslationKey(stack), state.getBlock().getName());
     }
     

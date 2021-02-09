@@ -26,6 +26,7 @@ public class BitsAndChisels implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("BitsAndChisels");
 
 	public static final BitsBlock BITS_BLOCK = new BitsBlock(FabricBlockSettings.of(Material.METAL).nonOpaque().hardness(4.0f));
+	public static final BlockItem BITS_BLOCK_ITEM = new BlockItem(BITS_BLOCK, new Item.Settings());
 	public static final DiamondChisel DIAMOND_CHISEL = new DiamondChisel(new Item.Settings());
 	public static final IronChisel IRON_CHISEL = new IronChisel(new Item.Settings());
 	public static final WrenchItem WRENCH_ITEM = new WrenchItem(new Item.Settings());
@@ -53,7 +54,7 @@ public class BitsAndChisels implements ModInitializer {
 		// Proceed with mild caution.
 		Registry.register(Registry.BLOCK, new Identifier(MODID, "bits_block"), BITS_BLOCK);
 		BITS_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "bitsandchisels:bits_block_entity", BlockEntityType.Builder.create(BitsBlockEntity::new, BITS_BLOCK).build(null));
-		Registry.register(Registry.ITEM, new Identifier(MODID, "bits_block"), new BlockItem(BITS_BLOCK, new Item.Settings()));
+		Registry.register(Registry.ITEM, new Identifier(MODID, "bits_block"), BITS_BLOCK_ITEM);
 		Registry.register(Registry.ITEM, new Identifier(MODID, "diamond_chisel"), DIAMOND_CHISEL);
 		DIAMOND_CHISEL.init();
 		Registry.register(Registry.ITEM, new Identifier(MODID, "iron_chisel"), IRON_CHISEL);
