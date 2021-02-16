@@ -11,21 +11,17 @@ import net.minecraft.util.math.Direction;
 public class BitTransform {
     private static float ONE_PIXEL = 1f/16f; 
 
-    protected int x;
-    protected int y;
-    protected int z;
+    private BitTransform() { }
 
-    public boolean transform(MutableQuadView quad, Direction direction) {
-        Vector3f tmp = new Vector3f();
+    public static void transform(MutableQuadView quad, Direction direction, int minx, int miny, int minz, int maxx, int maxy, int maxz, Vector3f tmp) {
         Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
-        transformer(x * ONE_PIXEL, (x + 1) * ONE_PIXEL, y * ONE_PIXEL, (y + 1) * ONE_PIXEL, z * ONE_PIXEL, (z + 1) * ONE_PIXEL, quad, tmp);
+        transformer(minx * ONE_PIXEL, (maxx + 1) * ONE_PIXEL, miny * ONE_PIXEL, (maxy + 1) * ONE_PIXEL, minz * ONE_PIXEL, (maxz + 1) * ONE_PIXEL, quad, tmp);
         int bake_flags = MutableQuadView.BAKE_LOCK_UV;
         if (direction == Direction.UP) bake_flags = bake_flags | MutableQuadView.BAKE_FLIP_V;
         quad.spriteBake(0, sprite, bake_flags);
-        return true;
     }
 
-    private void transformer(float minx, float maxx, float miny, float maxy, float minz, float maxz, MutableQuadView quad, Vector3f tmp) {
+    private static void transformer(float minx, float maxx, float miny, float maxy, float minz, float maxz, MutableQuadView quad, Vector3f tmp) {
         for (int i = 0; i < 4; i++) {
             quad.copyPos(i, tmp);
             float _x = tmp.getX();
@@ -62,7 +58,7 @@ public class BitTransform {
         }
     }
 
-    public static boolean approxEqual(float actualValue, float desiredValue) {
+    private static boolean approxEqual(float actualValue, float desiredValue) {
         float diff = Math.abs(desiredValue - actualValue);
         return diff < 0.01f;
     }

@@ -10,6 +10,7 @@ import io.github.coolmineman.bitsandchisels.wrench.WrenchItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
@@ -24,6 +25,8 @@ public class BitsAndChisels implements ModInitializer {
 	public static final String MODID = "bitsandchisels";
 
 	public static final Logger LOGGER = LogManager.getLogger("BitsAndChisels");
+
+	public static final boolean CANVAS = FabricLoader.getInstance().isModLoaded("canvas");
 
 	public static final BitsBlock BITS_BLOCK = new BitsBlock(FabricBlockSettings.of(Material.METAL).nonOpaque().hardness(4.0f));
 	public static final BlockItem BITS_BLOCK_ITEM = new BlockItem(BITS_BLOCK, new Item.Settings());

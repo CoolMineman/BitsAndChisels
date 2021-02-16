@@ -8,7 +8,9 @@
   ],
   "client": [
     "ParticleYeeter",
-    "RedSelectionBoxMixin"
+    "RedSelectionBoxMixin",
+    "BakedQuadAccessor",
+    "BlockStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1
