@@ -46,7 +46,7 @@ public class BlockStateMixin implements CubeRenderStuff {
                 BakedModelManager modelman = MinecraftClient.getInstance().getBakedModelManager();
                 List<BakedQuad> dQuads = newModel.getQuads(thiz, d, ThreadLocalRandom.current());
                 if (dQuads == null || dQuads.isEmpty()) dQuads = modelman.getMissingModel().getQuads(thiz, d, ThreadLocalRandom.current());
-                BakedQuad[] localquads = dQuads.toArray(BakedQuad[]::new);
+                BakedQuad[] localquads = dQuads.toArray(new BakedQuad[dQuads.size()]);
                 quads[d.getId()] = localquads;
                 materials[d.getId()] = new RenderMaterial[localquads.length];
                 for (int i = 0; i < localquads.length; i++) {
