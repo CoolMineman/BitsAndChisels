@@ -154,7 +154,7 @@ public class BitItem extends Item {
     @Override
     public Text getName(ItemStack stack) {
         BlockState state = stack.getSubTag("bit") != null ? NbtHelper.toBlockState(stack.getSubTag("bit")) : Blocks.AIR.getDefaultState();
-        return new TranslatableText(this.getTranslationKey(stack), state.getBlock().getName());
+        return new TranslatableText(this.getTranslationKey(stack), new TranslatableText(state.getBlock().getTranslationKey()));
     }
     
 }

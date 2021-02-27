@@ -28,7 +28,7 @@ public class BitsAndChisels implements ModInitializer {
 
 	public static final boolean CANVAS = FabricLoader.getInstance().isModLoaded("canvas");
 
-	public static final BitsBlock BITS_BLOCK = new BitsBlock(FabricBlockSettings.of(Material.METAL).nonOpaque().hardness(4.0f));
+	public static final BitsBlock BITS_BLOCK = new BitsBlock(FabricBlockSettings.of(Material.METAL).nonOpaque().dynamicBounds().hardness(4.0f));
 	public static final BlockItem BITS_BLOCK_ITEM = new BlockItem(BITS_BLOCK, new Item.Settings());
 	public static final DiamondChisel DIAMOND_CHISEL = new DiamondChisel(new Item.Settings());
 	public static final IronChisel IRON_CHISEL = new IronChisel(new Item.Settings());

@@ -6,8 +6,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import grondag.frex.api.Renderer;
-import grondag.frex.api.material.MaterialMap;
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.CanvasHelper;
 import io.github.coolmineman.bitsandchisels.duck.CubeRenderStuff;

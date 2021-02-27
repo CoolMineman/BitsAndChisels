@@ -29,11 +29,6 @@ public class BitsBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public boolean hasDynamicBounds() {
-        return true;
-    }
-
-    @Override
     public BlockEntity createBlockEntity(BlockView world) {
         return new BitsBlockEntity();
     }
