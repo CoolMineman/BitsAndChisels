@@ -15,7 +15,7 @@ public class ItemHelpers {
     }
 
     public static ItemStack addBlockEntityNbt(ItemStack stack, BlockEntity blockEntity) {
-        CompoundTag compoundTag = blockEntity.toTag(new CompoundTag());
+        CompoundTag compoundTag = blockEntity.writeNbt(new CompoundTag());
         CompoundTag compoundTag3;
         stack.putSubTag("BlockEntityTag", compoundTag);
         compoundTag3 = new CompoundTag();

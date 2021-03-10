@@ -3,12 +3,11 @@ package io.github.coolmineman.bitsandchisels;
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
 import io.github.coolmineman.bitsandchisels.api.client.RedBoxCallback;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -34,16 +33,15 @@ public class BitItem extends Item {
     }
 
     public void init() {
-        ServerSidePacketRegistry.INSTANCE.register(PACKET_ID, (packetContext, attachedData) -> {
+        ServerPlayNetworking.registerGlobalReceiver(PACKET_ID, (server, player, handler, buf, responseSender) -> {
             // Get the BlockPos we put earlier in the IO thread
-            BlockPos pos = attachedData.readBlockPos();
-            int x = attachedData.readInt();
-            int y = attachedData.readInt();
-            int z = attachedData.readInt();
-            Hand hand = attachedData.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
-            packetContext.getTaskQueue().execute(() -> {
+            BlockPos pos = buf.readBlockPos();
+            int x = buf.readInt();
+            int y = buf.readInt();
+            int z = buf.readInt();
+            Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
+            server.execute(() -> {
                 // Execute on the main thread
-                PlayerEntity player = packetContext.getPlayer();
                 World world = player.world;
                 if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 && !BitUtils.exists(BitUtils.getBit(world, pos, x, y, z))) {
                     ItemStack stack = player.getStackInHand(hand);
@@ -143,7 +141,7 @@ public class BitItem extends Item {
                 passedData.writeInt(y);
                 passedData.writeInt(z);
                 passedData.writeBoolean(context.getHand().equals(Hand.MAIN_HAND));
-                ClientSidePacketRegistry.INSTANCE.sendToServer(PACKET_ID, passedData);
+                ClientPlayNetworking.send(PACKET_ID, passedData);
                 return ActionResult.SUCCESS;
             }
             

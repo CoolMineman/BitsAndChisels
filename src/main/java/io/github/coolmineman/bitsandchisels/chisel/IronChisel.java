@@ -7,9 +7,9 @@ import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
 import io.github.coolmineman.bitsandchisels.api.client.RedBoxCallback;
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -37,14 +37,13 @@ public class IronChisel extends ToolItem {
     }
 
     public void init() {
-        ServerSidePacketRegistry.INSTANCE.register(PACKET_ID, (packetContext, attachedData) -> {
-            BlockPos pos = attachedData.readBlockPos();
-            int x = attachedData.readInt();
-            int y = attachedData.readInt();
-            int z = attachedData.readInt();
-            packetContext.getTaskQueue().execute(() -> {
+        ServerPlayNetworking.registerGlobalReceiver(PACKET_ID, (server, player, handler, buf, responseSender) -> {
+            BlockPos pos = buf.readBlockPos();
+            int x = buf.readInt();
+            int y = buf.readInt();
+            int z = buf.readInt();
+            server.execute(() -> {
                 // Execute on the main thread
-                PlayerEntity player = packetContext.getPlayer();
                 World world = player.world;
                 ItemStack stack = player.getMainHandStack();
                 if (world.canSetBlock(pos) && stack.getItem() == BitsAndChisels.IRON_CHISEL && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
@@ -54,7 +53,7 @@ public class IronChisel extends ToolItem {
                                 Optional<BlockState> oldstate = BitUtils.getBit(world, pos, x + i, y + j, z + k);
                                 if (oldstate.isPresent() && BitUtils.setBit(world, pos, x + i, y + j, z + k, Blocks.AIR.getDefaultState())) {
                                     BitUtils.update(world, pos);
-                                    if (!oldstate.get().isAir()) player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate.get()));
+                                    if (!oldstate.get().isAir()) player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate.get()));
                                 }
                             }
                         }
@@ -110,7 +109,7 @@ public class IronChisel extends ToolItem {
                 passedData.writeInt(x);
                 passedData.writeInt(y);
                 passedData.writeInt(z);
-                ClientSidePacketRegistry.INSTANCE.sendToServer(PACKET_ID, passedData);
+                ClientPlayNetworking.send(PACKET_ID, passedData);
                 lastBreakTick = player.world.getTime();
                 return ActionResult.SUCCESS;
             }

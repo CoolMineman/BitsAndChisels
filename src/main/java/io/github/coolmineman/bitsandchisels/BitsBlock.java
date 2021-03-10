@@ -29,8 +29,8 @@ public class BitsBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new BitsBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new BitsBlockEntity(pos, state);
     }
     
     @Override

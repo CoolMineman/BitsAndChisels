@@ -23,12 +23,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.shape.BitSetVoxelSet;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.World;
 
 public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity {
     private static final Direction[] X_DIRECTIONS = {Direction.EAST, Direction.WEST};
@@ -42,12 +44,12 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     protected VoxelShape shape = VoxelShapes.fullCube();
     boolean fullcube = false;
 
-    public BitsBlockEntity() {
-        this(Blocks.AIR.getDefaultState());
+    public BitsBlockEntity(BlockPos pos, BlockState state) {
+        this(Blocks.AIR.getDefaultState(), pos, state);
     }
 
-    public BitsBlockEntity(BlockState fillState) {
-        this(new BlockState[16][16][16]);
+    public BitsBlockEntity(BlockState fillState, BlockPos pos, BlockState state) {
+        this(new BlockState[16][16][16], pos, state);
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
@@ -57,21 +59,21 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         }
     }
 
-    public BitsBlockEntity(BlockState[][][] states) {
-        super(BitsAndChisels.BITS_BLOCK_ENTITY);
+    public BitsBlockEntity(BlockState[][][] states, BlockPos pos, BlockState state) {
+        super(BitsAndChisels.BITS_BLOCK_ENTITY, pos, state);
         this.states = states;
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
+    public CompoundTag writeNbt(CompoundTag tag) {
+        super.writeNbt(tag);
         BitNbtUtil.write3DBitArray(tag, states);
         return tag;
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(CompoundTag tag) {
+        super.readNbt(tag);
         BitNbtUtil.read3DBitArray(tag, states);
         rebuildShape();
     }
@@ -102,7 +104,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         return states;
     }
 
-    public boolean quadNeeded(Direction d, int x, int y, int z) {
+    public static boolean quadNeeded(BlockState[][][] states, Direction d, int x, int y, int z) {
         switch (d) {
             case UP:
                 if (y <= 14) return states[x][y + 1][z].isAir() || (RenderLayers.getBlockLayer(states[x][y + 1][z]) != RenderLayer.getSolid() && states[x][y][z] != states[x][y + 1][z]);
@@ -135,7 +137,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                 for (int k = 0; k < 16; k++) {
                     BlockState state = states[i][j][k];
                     if (!state.isAir()) {
-                        set.set(i, j, k, true, true);
+                        set.set(i, j, k);
                     }
                     if (firststate != state) {
                         fullcube = false;
@@ -146,7 +148,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         shape = SimpleVoxelShapeFactory.getSimpleVoxelShape(set);
     }
 
-    public boolean canCull(Direction d, int x, int y, int z) {
+    public static boolean canCull(Direction d, int x, int y, int z) {
         switch (d) {
             case UP:
                 return y == 15;
@@ -165,7 +167,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     }
 
     @Environment(EnvType.CLIENT)
-    private void doQuad(QuadEmitter emitter, Vector3f tmp, Direction d, BlockState state, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
+    private static void doQuad(QuadEmitter emitter, @Nullable World world, @Nullable BlockPos pos, Vec3f tmp, Direction d, BlockState state, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
         CubeRenderStuff cubeRenderStuff = CubeRenderStuff.of(state);
         for (int z = 0; z < cubeRenderStuff.getQuads(d.getId()).length; z++) {
             BakedQuad vanillaQuad = cubeRenderStuff.getQuads(d.getId())[z];
@@ -188,9 +190,14 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
 
     @Environment(EnvType.CLIENT)
     protected void rebuildMesh() {
+        this.mesh = buildMesh(states, world, pos);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static Mesh buildMesh(BlockState[][][] states, @Nullable World world, @Nullable BlockPos pos) {
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
         QuadEmitter emitter = builder.getEmitter();
-        Vector3f tmp = new Vector3f();
+        Vec3f tmp = new Vec3f();
         boolean[][] used = new boolean[16][16];
 
         //X
@@ -200,12 +207,12 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                 for (int cy = 0; cy < 16; cy++) {
                     for (int cz = 0; cz < 16; cz++) {
                         BlockState state = states[cx][cy][cz];
-                        if (state.isAir() || used[cy][cz] || !quadNeeded(d, cx, cy, cz)) continue;
+                        if (state.isAir() || used[cy][cz] || !quadNeeded(states, d, cx, cy, cz)) continue;
                         int cy2 = cy;
                         int cz2 = cz;
                         //Greed Y
                         for (int ty = cy; ty < 16; ty++) {
-                            if (states[cx][ty][cz] == state && !used[ty][cz] && quadNeeded(d, cx, ty, cz)) {
+                            if (states[cx][ty][cz] == state && !used[ty][cz] && quadNeeded(states, d, cx, ty, cz)) {
                                 cy2 = ty;
                             } else {
                                 break;
@@ -214,7 +221,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                         // Greed Z
                         greedz: for (int tz = cz; tz < 16; tz++) {
                             for (int ty = cy; ty <= cy2; ty++) {
-                                if (states[cx][ty][tz] != state || used[ty][tz] || !quadNeeded(d, cx, ty, tz)) {
+                                if (states[cx][ty][tz] != state || used[ty][tz] || !quadNeeded(states, d, cx, ty, tz)) {
                                     break greedz;
                                 }
                             }
@@ -226,7 +233,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                             }
                         }
 
-                        doQuad(emitter, tmp, d, state, cx, cy, cz, cx, cy2, cz2);
+                        doQuad(emitter, world, pos, tmp, d, state, cx, cy, cz, cx, cy2, cz2);
                     }
                 }
             }
@@ -239,12 +246,12 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                 for (int cx = 0; cx < 16; cx++) {
                     for (int cz = 0; cz < 16; cz++) {
                         BlockState state = states[cx][cy][cz];
-                        if (state.isAir() || used[cx][cz] || !quadNeeded(d, cx, cy, cz)) continue;
+                        if (state.isAir() || used[cx][cz] || !quadNeeded(states, d, cx, cy, cz)) continue;
                         int cx2 = cx;
                         int cz2 = cz;
                         //Greed X
                         for (int tx = cx; tx < 16; tx++) {
-                            if (states[tx][cy][cz] == state && !used[tx][cz] && quadNeeded(d, tx, cy, cz)) {
+                            if (states[tx][cy][cz] == state && !used[tx][cz] && quadNeeded(states, d, tx, cy, cz)) {
                                 cx2 = tx;
                             } else {
                                 break;
@@ -253,7 +260,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                         // Greed Z
                         greedz: for (int tz = cz; tz < 16; tz++) {
                             for (int tx = cx; tx <= cx2; tx++) {
-                                if (states[tx][cy][tz] != state || used[tx][tz] || !quadNeeded(d, tx, cy, tz)) {
+                                if (states[tx][cy][tz] != state || used[tx][tz] || !quadNeeded(states, d, tx, cy, tz)) {
                                     break greedz;
                                 }
                             }
@@ -265,7 +272,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                             }
                         }
 
-                        doQuad(emitter, tmp, d, state, cx, cy, cz, cx2, cy, cz2);
+                        doQuad(emitter, world, pos, tmp, d, state, cx, cy, cz, cx2, cy, cz2);
                     }
                 }
             }
@@ -278,12 +285,12 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                 for (int cx = 0; cx < 16; cx++) {
                     for (int cy = 0; cy < 16; cy++) {
                         BlockState state = states[cx][cy][cz];
-                        if (state.isAir() || used[cx][cy] || !quadNeeded(d, cx, cy, cz)) continue;
+                        if (state.isAir() || used[cx][cy] || !quadNeeded(states, d, cx, cy, cz)) continue;
                         int cx2 = cx;
                         int cy2 = cy;
                         //Greed X
                         for (int tx = cx; tx < 16; tx++) {
-                            if (states[tx][cy][cz] == state && !used[tx][cz] && quadNeeded(d, tx, cy, cz)) {
+                            if (states[tx][cy][cz] == state && !used[tx][cz] && quadNeeded(states, d, tx, cy, cz)) {
                                 cx2 = tx;
                             } else {
                                 break;
@@ -292,7 +299,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                         // Greed Y
                         greedy: for (int ty = cy; ty < 16; ty++) {
                             for (int tx = cx; tx <= cx2; tx++) {
-                                if (states[tx][ty][cz] != state || used[tx][ty] || !quadNeeded(d, tx, ty, cz)) {
+                                if (states[tx][ty][cz] != state || used[tx][ty] || !quadNeeded(states, d, tx, ty, cz)) {
                                     break greedy;
                                 }
                             }
@@ -304,24 +311,24 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
                             }
                         }
 
-                        doQuad(emitter, tmp, d, state, cx, cy, cz, cx2, cy2, cz);
+                        doQuad(emitter, world, pos, tmp, d, state, cx, cy, cz, cx2, cy2, cz);
                     }
                 }
             }
         }
-        mesh = builder.build();
+        return builder.build();
     }
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        fromTag(null, tag);
+        readNbt(tag);
         rebuildMesh();
         MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
-        return toTag(tag);
+        return writeNbt(tag);
     }
 
     @Environment(EnvType.CLIENT)

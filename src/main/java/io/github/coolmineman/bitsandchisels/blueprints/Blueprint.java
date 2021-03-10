@@ -60,7 +60,7 @@ public class Blueprint extends Item {
                                     if (checkSlots != null) {
                                         for (int z = 0; z < checkSlots.size(); z++) {
                                             int slot = checkSlots.getInt(z);
-                                            ItemStack slotStack = context.getPlayer().inventory.getStack(slot);
+                                            ItemStack slotStack = context.getPlayer().getInventory().getStack(slot);
                                             if (!slotStack.isEmpty() && BitUtils.setBit(world, placePos, i, j, k, bitState)) {
                                                 slotStack.decrement(1);
                                                 update = true;
@@ -84,8 +84,8 @@ public class Blueprint extends Item {
 
     private Map<BlockState, IntList> indexPlayerInventory(PlayerEntity playerEntity) {
         HashMap<BlockState, IntList> result = new HashMap<>();
-        for (int i = 0; i < playerEntity.inventory.size(); i++) {
-            ItemStack stack = playerEntity.inventory.getStack(i);
+        for (int i = 0; i < playerEntity.getInventory().size(); i++) {
+            ItemStack stack = playerEntity.getInventory().getStack(i);
             if (stack.getItem() == BitsAndChisels.BIT_ITEM) {
                 BlockState itemState = NbtHelper.toBlockState(stack.getSubTag("bit"));
                 if (!itemState.isAir()) {
