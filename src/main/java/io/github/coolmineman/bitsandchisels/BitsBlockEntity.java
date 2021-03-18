@@ -20,6 +20,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.model.BakedQuad;
@@ -172,7 +173,7 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
             MutableQuadView quad = emitter.fromVanilla(vanillaQuad, cubeRenderStuff.getMaterials(d.getId())[z], d);
             BitTransform.transform(quad, d, minx, miny, minz, maxx, maxy, maxz, tmp);
             if (vanillaQuad.hasColor()) {
-                int color = 0xFF000000 | ColorProviderRegistry.BLOCK.get(state.getBlock()).getColor(state, world, pos, vanillaQuad.getColorIndex());
+                int color = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(state, world, pos, vanillaQuad.getColorIndex());
                 quad.spriteColor(0, color, color, color, color);
             }
             if (!canCull(d, minx, miny, minz)) quad.cullFace(null);
