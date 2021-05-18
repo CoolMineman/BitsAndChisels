@@ -8,6 +8,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.StateManager.Builder;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -16,13 +18,21 @@ import net.minecraft.world.World;
 
 public class BitsBlock extends Block implements BlockEntityProvider {
 
+    public static final IntProperty LIGHT_LEVEL = IntProperty.of("light_level", 0, 16);
+
     public BitsBlock(Settings settings) {
         super(settings);
+        this.setDefaultState(stateManager.getDefaultState().with(LIGHT_LEVEL, 0));
     }
 
     @Override
-    public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
-        super.afterBreak(world, player, pos, state, blockEntity, stack);
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        builder.add(LIGHT_LEVEL);
+    }
+
+    @Override
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
         if (world instanceof ServerWorld && blockEntity != null) {
             dropStack(world, pos, ItemHelpers.blockToItem(this, blockEntity));
         }
@@ -31,6 +41,11 @@ public class BitsBlock extends Block implements BlockEntityProvider {
     @Override
     public BlockEntity createBlockEntity(BlockView world) {
         return new BitsBlockEntity();
+    }
+
+    @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        return ItemHelpers.blockToItem(this, world.getBlockEntity(pos));
     }
     
     @Override

@@ -95,7 +95,7 @@ public class IronChisel extends ToolItem {
     }
 
     public ActionResult interactBreakBlockClient(PlayerEntity player, World world, BlockPos pos) {
-        if (player.world.getTime() - lastBreakTick < 5) return ActionResult.CONSUME;
+        if (getTime() - lastBreakTick < 5) return ActionResult.CONSUME;
         MinecraftClient client = MinecraftClient.getInstance();
         HitResult hit = client.crosshairTarget;
 
@@ -111,11 +111,14 @@ public class IronChisel extends ToolItem {
                 passedData.writeInt(y);
                 passedData.writeInt(z);
                 ClientSidePacketRegistry.INSTANCE.sendToServer(PACKET_ID, passedData);
-                lastBreakTick = player.world.getTime();
+                lastBreakTick = getTime();
                 return ActionResult.SUCCESS;
             }
         }
         return ActionResult.CONSUME;
     }
     
+    private static long getTime() {
+        return System.currentTimeMillis() / 50;
+    }
 }

@@ -25,6 +25,7 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.shape.BitSetVoxelSet;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -39,7 +40,6 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     @Environment(EnvType.CLIENT)
     protected Mesh mesh;
     protected VoxelShape shape = VoxelShapes.fullCube();
-    boolean fullcube = false;
 
     public BitsBlockEntity() {
         this(Blocks.AIR.getDefaultState());
@@ -88,9 +88,6 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
 
     public void rebuildServer() {
         rebuildShape();
-        if (fullcube) {
-            world.setBlockState(pos, states[0][0][0]);
-        }
     }
 
     public BlockState getState(int x, int y, int z) {
@@ -126,13 +123,15 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     }
 
     protected void rebuildShape() {
-        fullcube = true;
+        boolean fullcube = true;
         BitSetVoxelSet set = new BitSetVoxelSet(16, 16, 16);
         BlockState firststate = states[0][0][0];
+        int totalLight = 0;
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 for (int k = 0; k < 16; k++) {
                     BlockState state = states[i][j][k];
+                    totalLight += state.getLuminance();
                     if (!state.isAir()) {
                         set.set(i, j, k, true, true);
                     }
@@ -143,6 +142,15 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
             }
         }
         shape = SimpleVoxelShapeFactory.getSimpleVoxelShape(set);
+        if (world != null) {
+            BlockState state = world.getBlockState(pos);
+            if (fullcube) {
+                world.setBlockState(pos, states[0][0][0]);
+            }
+            if (state.get(BitsBlock.LIGHT_LEVEL) * 4096 != totalLight) {
+                world.setBlockState(pos, state.with(BitsBlock.LIGHT_LEVEL, MathHelper.clamp(totalLight / 4096, 0, 16)), 0);
+            }
+        }
     }
 
     public boolean canCull(Direction d, int x, int y, int z) {
