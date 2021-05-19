@@ -29,7 +29,7 @@ public class RedSelectionBoxMixin implements RedBoxCallback.IRedBoxDrawer {
         RedBoxCallback.EVENT.invoker().drawBoxes(this, matrixStack, vertexConsumer, d, e, f);
     }
 
-    public void drawRedBox(MatrixStack matrixStack, VertexConsumer vertexConsumer, BlockPos block, int bitx, int bity, int bitz, double worldoffsetx, double worldoffsety, double worldoffsetz) {
+    public void drawRedBox(MatrixStack matrixStack, VertexConsumer vertexConsumer, BlockPos block, int bitx, int bity, int bitz, int bitx2, int bity2, int bitz2, double worldoffsetx, double worldoffsety, double worldoffsetz) {
         float r = 1f;
         float g = 0f;
         float b = 0f;
@@ -45,9 +45,9 @@ public class RedSelectionBoxMixin implements RedBoxCallback.IRedBoxDrawer {
         double y = ((double)bity) * 0.0625d;
         double z = ((double)bitz) * 0.0625d;
 
-        double x1 = ((double)bitx + 1) * 0.0625d;
-        double y1 = ((double)bity + 1) * 0.0625d;
-        double z1 = ((double)bitz + 1) * 0.0625d;
+        double x1 = ((double)bitx2) * 0.0625d;
+        double y1 = ((double)bity2) * 0.0625d;
+        double z1 = ((double)bitz2) * 0.0625d;
 
         //*
         vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();

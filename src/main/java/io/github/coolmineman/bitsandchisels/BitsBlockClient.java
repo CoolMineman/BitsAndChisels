@@ -18,6 +18,7 @@ public class BitsBlockClient implements ClientModInitializer {
         BitsAndChisels.DIAMOND_CHISEL.initClient();
         BitsAndChisels.IRON_CHISEL.initClient();
         BitsAndChisels.BIT_ITEM.initClient();
+        BitsAndChisels.SMART_CHISEL.initClient();
     }
 
     public static class BitsModelProvider implements ModelResourceProvider {

@@ -3,17 +3,20 @@ package io.github.coolmineman.bitsandchisels;
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
 import io.github.coolmineman.bitsandchisels.api.client.RedBoxCallback;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -25,33 +28,31 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public class BitItem extends Item {
+public class BitItem extends Item implements ServerPlayNetworking.PlayChannelHandler {
 
     public static final Identifier PACKET_ID = new Identifier("bitsandchisels", "bit_packet");
 
     public BitItem(Settings settings) {
         super(settings);
+        ServerPlayNetworking.registerGlobalReceiver(PACKET_ID, this);
     }
 
-    public void init() {
-        ServerSidePacketRegistry.INSTANCE.register(PACKET_ID, (packetContext, attachedData) -> {
-            // Get the BlockPos we put earlier in the IO thread
-            BlockPos pos = attachedData.readBlockPos();
-            int x = attachedData.readInt();
-            int y = attachedData.readInt();
-            int z = attachedData.readInt();
-            Hand hand = attachedData.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
-            packetContext.getTaskQueue().execute(() -> {
-                // Execute on the main thread
-                PlayerEntity player = packetContext.getPlayer();
-                World world = player.world;
-                if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 && !BitUtils.exists(BitUtils.getBit(world, pos, x, y, z))) {
-                    ItemStack stack = player.getStackInHand(hand);
-                    boolean b = BitUtils.setBit(world, pos, x, y, z, BitUtils.getBit(stack));
-                    if (b && !player.isCreative()) stack.decrement(1);
-                    if (b) BitUtils.update(world, pos);
-                }
-            });
+    @Override
+    public void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
+        BlockPos pos = buf.readBlockPos();
+        int x = buf.readInt();
+        int y = buf.readInt();
+        int z = buf.readInt();
+        Hand hand = buf.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
+        server.execute(() -> {
+            // Execute on the main thread
+            World world = player.world;
+            if (world.canSetBlock(pos) && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 && !BitUtils.exists(BitUtils.getBit(world, pos, x, y, z))) {
+                ItemStack stack = player.getStackInHand(hand);
+                boolean b = BitUtils.setBit(world, pos, x, y, z, BitUtils.getBit(stack));
+                if (b && !player.isCreative()) stack.decrement(1);
+                if (b) BitUtils.update(world, pos);
+            }
         });
     }
 
@@ -92,7 +93,7 @@ public class BitItem extends Item {
                         z += 16;
                     }
 
-                    redBoxDrawer.drawRedBox(matrixStack, vertexConsumer, pos, x, y, z, worldoffsetx, worldoffsety, worldoffsetz);
+                    redBoxDrawer.drawRedBox(matrixStack, vertexConsumer, pos, x, y, z, x + 1, y + 1, z + 1, worldoffsetx, worldoffsety, worldoffsetz);
                 }
             }
         });
@@ -143,7 +144,7 @@ public class BitItem extends Item {
                 passedData.writeInt(y);
                 passedData.writeInt(z);
                 passedData.writeBoolean(context.getHand().equals(Hand.MAIN_HAND));
-                ClientSidePacketRegistry.INSTANCE.sendToServer(PACKET_ID, passedData);
+                ClientPlayNetworking.send(PACKET_ID, passedData);
                 return ActionResult.SUCCESS;
             }
             
