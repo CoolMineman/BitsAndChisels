@@ -1,6 +1,6 @@
 package io.github.coolmineman.bitsandchisels.api;
 
-import java.util.Optional;
+import org.jetbrains.annotations.Nullable;
 
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
@@ -52,20 +52,20 @@ public class BitUtils {
         return false;
     }
 
-    public static Optional<BlockState> getBit(World world, BlockPos block, int x, int y, int z) {
+    public static @Nullable BlockState getBit(World world, BlockPos block, int x, int y, int z) {
         BlockState state = world.getBlockState(block);
         BlockEntity e1 = world.getBlockEntity(block);
         if (e1 instanceof BitsBlockEntity) {
             BitsBlockEntity e = (BitsBlockEntity) e1;
-            return Optional.of(e.getState(x, y, z));
+            return e.getState(x, y, z);
         } else if (!state.isOf(BitsAndChisels.BITS_BLOCK) && canChisel(state, world, block) && state.isFullCube(world, block)) {
-            return Optional.of(state);
+            return state;
         }
-        return Optional.empty();
+        return null;
     }
 
-    public static boolean exists(Optional<BlockState> bit) {
-        return bit.isPresent() && !bit.get().isAir();
+    public static boolean exists(@Nullable BlockState bit) {
+        return bit != null && !bit.isAir();
     }
 
     public static ItemStack getBitItemStack(BlockState state) {

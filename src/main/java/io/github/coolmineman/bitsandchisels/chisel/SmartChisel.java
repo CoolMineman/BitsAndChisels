@@ -111,11 +111,24 @@ public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayCh
                             int x = Math.floorMod(i, 16);
                             int y = Math.floorMod(j, 16);
                             int z = Math.floorMod(k, 16);
-                            Optional<BlockState> oldstate = BitUtils.getBit(world, mut, x, y, z);
-                            if (oldstate.isPresent() && BitUtils.setBit(world, mut, x, y, z, Blocks.AIR.getDefaultState())) {
-                                BitUtils.update(world, mut); //TODO optimize
-                                if (!oldstate.get().isAir()) player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate.get()));
+                            BlockState oldstate = BitUtils.getBit(world, mut, x, y, z);
+                            if (BitUtils.exists(oldstate) && BitUtils.setBit(world, mut, x, y, z, Blocks.AIR.getDefaultState())) {
+                                player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate));
                             }
+                        }
+                    }
+                }
+                int blockx1 = pos.getX() + Math.floorDiv(x1, 16);
+                int blocky1 = pos.getY() + Math.floorDiv(y1, 16);
+                int blockz1 = pos.getZ() + Math.floorDiv(z1, 16);
+                int blockx2 = pos.getX() + Math.floorDiv(x2, 16);
+                int blocky2 = pos.getY() + Math.floorDiv(y2, 16);
+                int blockz2 = pos.getZ() + Math.floorDiv(z2, 16);
+                for (int i = blockx1; i <= blockx2; i++) {
+                    for (int j = blocky1; j <= blocky2; j++) {
+                        for (int k = blockz1; k <= blockz2; k++) {
+                            mut.set(i, j, k);
+                            BitUtils.update(world, mut);
                         }
                     }
                 }
