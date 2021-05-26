@@ -51,7 +51,7 @@ public class BitsBlock extends Block implements BlockEntityProvider {
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         BlockEntity bruhWhyMustMcBeLikeThisAhhhhh = world.getBlockEntity(pos);
-        if (bruhWhyMustMcBeLikeThisAhhhhh instanceof BlockEntity) {
+        if (bruhWhyMustMcBeLikeThisAhhhhh instanceof BitsBlockEntity) {
             return ((BitsBlockEntity)bruhWhyMustMcBeLikeThisAhhhhh).shape;
         }
         return VoxelShapes.empty();
