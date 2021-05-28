@@ -30,16 +30,9 @@ public class RedSelectionBoxMixin implements RedBoxCallback.IRedBoxDrawer {
     }
 
     public void drawRedBox(MatrixStack matrixStack, VertexConsumer vertexConsumer, BlockPos block, int bitx, int bity, int bitz, int bitx2, int bity2, int bitz2, double worldoffsetx, double worldoffsety, double worldoffsetz) {
-        float r = 1f;
-        float g = 0f;
-        float b = 0f;
-        float a = 0.4f;
-
         double xoffset = block.getX() - worldoffsetx;
         double yoffset = block.getY() - worldoffsety;
         double zoffset = block.getZ() - worldoffsetz;
-        
-        Matrix4f matrix4f = matrixStack.peek().getModel();
 
         double x = ((double)bitx) * 0.0625d;
         double y = ((double)bity) * 0.0625d;
@@ -49,41 +42,6 @@ public class RedSelectionBoxMixin implements RedBoxCallback.IRedBoxDrawer {
         double y1 = ((double)bity2) * 0.0625d;
         double z1 = ((double)bitz2) * 0.0625d;
 
-        //*
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y1 + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y1 + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y1 + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y1 + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-        //*
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y1 + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y1 + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y1 + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y1 + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-        //*
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y1 + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x + xoffset), (float)(y1 + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
-
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y1 + yoffset), (float)(z + zoffset)).color(r, g, b, a).next();
-        vertexConsumer.vertex(matrix4f, (float)(x1 + xoffset), (float)(y1 + yoffset), (float)(z1 + zoffset)).color(r, g, b, a).next();
+        WorldRenderer.drawBox(matrixStack, vertexConsumer, x + xoffset, y + yoffset, z + zoffset, x1 + xoffset, y1 + yoffset, z1 + zoffset, 1f, 0f, 0f, 0.4f);
     }
 }

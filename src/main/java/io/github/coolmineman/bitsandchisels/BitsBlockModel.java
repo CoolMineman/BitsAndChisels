@@ -27,7 +27,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -38,7 +38,7 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     // *Important Stuff
 
-    private static LRUCache<CompoundTag, Mesh> cache = new LRUCache<>(200); //Should be enough (tm)
+    private static LRUCache<NbtCompound, Mesh> cache = new LRUCache<>(200); //Should be enough (tm)
 
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
@@ -48,14 +48,15 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        Mesh mesh = cache.computeIfAbsent(stack.getTag(), discard -> {
-            BitsBlockEntity result = new BitsBlockEntity();
-            CompoundTag tag = stack.getSubTag("BlockEntityTag");
+        var mesh = cache.computeIfAbsent(stack.getTag(), discard -> {
+            NbtCompound tag = stack.getSubTag("BlockEntityTag");
             if (tag != null) {
-                result.fromTag(null, tag);
+                var bits = new BlockState[16][16][16];
+                if (BitNbtUtil.read3DBitArray(tag, bits)) {
+                    return BitMeshes.createMesh(bits, null, null);
+                }
             }
-            result.rebuildMesh();
-            return result.mesh;
+            return null;
         });
 
         if (mesh != null) context.meshConsumer().accept(mesh);

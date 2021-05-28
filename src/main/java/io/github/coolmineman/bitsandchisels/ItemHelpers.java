@@ -3,9 +3,9 @@ package io.github.coolmineman.bitsandchisels;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 
 public class ItemHelpers {
     private ItemHelpers(){}
@@ -15,12 +15,12 @@ public class ItemHelpers {
     }
 
     public static ItemStack addBlockEntityNbt(ItemStack stack, BlockEntity blockEntity) {
-        CompoundTag compoundTag = blockEntity.toTag(new CompoundTag());
-        CompoundTag compoundTag3;
+        NbtCompound compoundTag = blockEntity.writeNbt(new NbtCompound());
+        NbtCompound compoundTag3;
         stack.putSubTag("BlockEntityTag", compoundTag);
-        compoundTag3 = new CompoundTag();
-        ListTag listTag = new ListTag();
-        listTag.add(StringTag.of("\"(+NBT)\""));
+        compoundTag3 = new NbtCompound();
+        NbtList listTag = new NbtList();
+        listTag.add(NbtString.of("\"(+NBT)\""));
         compoundTag3.put("Lore", listTag);
         stack.putSubTag("display", compoundTag3);
         return stack;

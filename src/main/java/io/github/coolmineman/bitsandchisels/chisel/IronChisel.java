@@ -57,7 +57,7 @@ public class IronChisel extends ToolItem implements ServerPlayNetworking.PlayCha
                         for (int k = 0; k < 4; k++) {
                             BlockState oldstate = BitUtils.getBit(world, pos, x + i, y + j, z + k);
                             if (BitUtils.exists(oldstate) && BitUtils.setBit(world, pos, x + i, y + j, z + k, Blocks.AIR.getDefaultState())) {
-                                player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate));
+                                player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate));
                             }
                         }
                     }

@@ -113,7 +113,7 @@ public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayCh
                             int z = Math.floorMod(k, 16);
                             BlockState oldstate = BitUtils.getBit(world, mut, x, y, z);
                             if (BitUtils.exists(oldstate) && BitUtils.setBit(world, mut, x, y, z, Blocks.AIR.getDefaultState())) {
-                                player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate));
+                                player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate));
                             }
                         }
                     }

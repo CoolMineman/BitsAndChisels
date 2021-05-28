@@ -55,7 +55,7 @@ public class DiamondChisel extends ToolItem implements ServerPlayNetworking.Play
                 BlockState oldstate = BitUtils.getBit(world, pos, x, y, z);
                 if (oldstate != null && BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState())) {
                     BitUtils.update(world, pos);
-                    if (!oldstate.isAir()) player.inventory.offerOrDrop(world, BitUtils.getBitItemStack(oldstate));
+                    if (!oldstate.isAir()) player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate));
                 }
             }
         });

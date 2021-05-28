@@ -11,6 +11,7 @@ import io.github.coolmineman.bitsandchisels.wrench.WrenchItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
@@ -46,6 +47,7 @@ public class BitsAndChisels implements ModInitializer {
 		.appendItems(stacks -> {
 			stacks.add(new ItemStack(DIAMOND_CHISEL));
 			stacks.add(new ItemStack(IRON_CHISEL));
+			stacks.add(new ItemStack(SMART_CHISEL));
 			stacks.add(new ItemStack(WRENCH_ITEM));
 			stacks.add(new ItemStack(BLUEPRINT));
 		}
@@ -58,7 +60,7 @@ public class BitsAndChisels implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 		Registry.register(Registry.BLOCK, new Identifier(MODID, "bits_block"), BITS_BLOCK);
-		BITS_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "bitsandchisels:bits_block_entity", BlockEntityType.Builder.create(BitsBlockEntity::new, BITS_BLOCK).build(null));
+		BITS_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "bitsandchisels:bits_block_entity", FabricBlockEntityTypeBuilder.create(BitsBlockEntity::new, BITS_BLOCK).build(null));
 		Registry.register(Registry.ITEM, new Identifier(MODID, "bits_block"), BITS_BLOCK_ITEM);
 		Registry.register(Registry.ITEM, new Identifier(MODID, "diamond_chisel"), DIAMOND_CHISEL);
 		Registry.register(Registry.ITEM, new Identifier(MODID, "iron_chisel"), IRON_CHISEL);

@@ -3,24 +3,24 @@ package io.github.coolmineman.bitsandchisels;
 import java.util.ArrayList;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.ByteArrayTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtByteArray;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtList;
 
 public class BitNbtUtil {
     private BitNbtUtil() { }
 
-    public static boolean read3DBitArray(CompoundTag tag, BlockState[][][] out) {
+    public static boolean read3DBitArray(NbtCompound tag, BlockState[][][] out) {
         ArrayList<BlockState> palette = new ArrayList<>();
-        ListTag palletteTag = (ListTag) tag.get("palette");
+        NbtList palletteTag = (NbtList) tag.get("palette");
         if (palletteTag == null) return false;
-        for (Tag statetag : palletteTag) {
-            palette.add(NbtHelper.toBlockState((CompoundTag) statetag));
+        for (NbtElement statetag : palletteTag) {
+            palette.add(NbtHelper.toBlockState((NbtCompound) statetag));
         }
-        ListTag bits = (ListTag) tag.get("bits");
-        ByteArrayTag bits2 = (ByteArrayTag) tag.get("bits_v2");
+        NbtList bits = (NbtList) tag.get("bits");
+        NbtByteArray bits2 = (NbtByteArray) tag.get("bits_v2");
         int index = 0;
         if (bits != null) {
             for (int i = 0; i < 16; i++) {
@@ -47,7 +47,7 @@ public class BitNbtUtil {
         return true;
     }
 
-    public static void write3DBitArray(CompoundTag tag, BlockState[][][] in) {
+    public static void write3DBitArray(NbtCompound tag, BlockState[][][] in) {
         ArrayList<BlockState> palette = new ArrayList<>();
         byte[] bits = new byte[8192];
         int arrayIndex = 0;
@@ -66,8 +66,8 @@ public class BitNbtUtil {
                 }
             }
         }
-        tag.put("bits_v2", new ByteArrayTag(bits));
-        ListTag palletteTag = new ListTag();
+        tag.put("bits_v2", new NbtByteArray(bits));
+        NbtList palletteTag = new NbtList();
         for (BlockState state : palette) {
             palletteTag.add(NbtHelper.fromBlockState(state));
         }
