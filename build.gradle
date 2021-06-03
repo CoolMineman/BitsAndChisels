@@ -26,7 +26,7 @@ repositories {
         url = "https://minecraft.curseforge.com/api/maven"
     }
 	maven {
-		url = 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/'
+		url = uri("https://storage.googleapis.com/devan-maven/")
 	}
 	maven {
         url "https://www.cursemaven.com"
@@ -50,8 +50,8 @@ dependencies {
 
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.247-alpha"
 
-	modImplementation("net.devtech:Stacc:1.0.1") { transitive = false }
-	include "net.devtech:Stacc:1.0.1"
+	modImplementation("net.devtech:Stacc:1.2.1") { transitive = false }
+	include "net.devtech:Stacc:1.2.1"
 
 	include "curse.maven:xlpackets-390168:3022566" // Avoid Stupid Networking Error AHHHHHHHHHHHHHHHH
 
