@@ -48,7 +48,7 @@ dependencies {
 	// modImplementation "grondag:canvas-mc116:1.0.+"
 	modCompileOnly("grondag:frex-mc116:4.0.+") { transitive = false }
 
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:5.9.171"
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.247-alpha"
 
 	modImplementation("net.devtech:Stacc:1.0.1") { transitive = false }
 	include "net.devtech:Stacc:1.0.1"
