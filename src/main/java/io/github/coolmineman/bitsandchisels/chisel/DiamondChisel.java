@@ -1,7 +1,5 @@
 package io.github.coolmineman.bitsandchisels.chisel;
 
-import java.util.Optional;
-
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
 import io.github.coolmineman.bitsandchisels.api.client.RedBoxCallback;

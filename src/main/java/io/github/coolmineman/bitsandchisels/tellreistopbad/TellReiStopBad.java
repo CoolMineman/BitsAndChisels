@@ -9,8 +9,8 @@ import net.minecraft.item.ItemStack;
 public class TellReiStopBad implements REIClientPlugin {
     @Override
     public void registerEntries(EntryRegistry registry) {
-        registry.removeEntryIf(entry -> entry.getType() == VanillaEntryTypes.ITEM &&
-                                        (entry.<ItemStack>castValue().getItem() == BitsAndChisels.BIT_ITEM
-                                         || entry.<ItemStack>castValue().getItem() == BitsAndChisels.BITS_BLOCK_ITEM));
+        registry.removeEntryIf(
+            entry -> entry.getType() == VanillaEntryTypes.ITEM && (entry.<ItemStack>castValue().getItem() == BitsAndChisels.BIT_ITEM || entry.<ItemStack>castValue().getItem() == BitsAndChisels.BITS_BLOCK_ITEM)
+        );
     }
 }

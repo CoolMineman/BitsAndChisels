@@ -46,7 +46,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	// modImplementation "grondag:canvas-mc116:1.0.+"
-	modCompileOnly("grondag:frex-mc116:4.0.+") { transitive = false }
+	modCompileOnly("grondag:frex-mc117:5.2.223") { transitive = false }
 
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.247-alpha"
 
