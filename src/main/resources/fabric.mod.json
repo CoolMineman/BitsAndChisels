@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "bitsandchisels",
   "version": "${version}",
-
   "name": "BitsAndChisels",
   "description": "Turn Blocks Into Small Bits With Chisels; Build All The Things",
   "authors": [
@@ -12,10 +11,8 @@
     "homepage": "https://github.com/CoolMineman/BitsAndChisels",
     "sources": "https://github.com/CoolMineman/BitsAndChisels"
   },
-
   "license": "CC0-1.0",
   "icon": "assets/bitsandchisels/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -31,7 +28,12 @@
   "mixins": [
     "bitsandchisels.mixins.json"
   ],
-
+  "custom": {
+    "dashloader:customobject": [
+      "io.github.coolmineman.bitsandchisels.dashloader.DashBitsBlockModel",
+      "io.github.coolmineman.bitsandchisels.dashloader.DashBitItemModel"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
