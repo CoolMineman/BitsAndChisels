@@ -4,7 +4,8 @@
   "package": "io.github.coolmineman.bitsandchisels.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "SimpleVoxelShapeFactory"
+    "SimpleVoxelShapeFactory",
+    "ThreadedAnvilChunkStorageMixin"
   ],
   "client": [
     "ParticleYeeter",

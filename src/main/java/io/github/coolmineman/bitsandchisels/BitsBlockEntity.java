@@ -11,8 +11,10 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.shape.BitSetVoxelSet;
@@ -130,10 +132,27 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         return writeNbt(tag);
     }
 
+    // Begin crimes agains modding
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        Identifier identifier = BlockEntityType.getId(this.getType());
+        if (identifier == null) {
+            throw new RuntimeException(this.getClass() + " is missing a mapping! This is a bug!");
+        } else {
+            NbtCompound nbt = new NbtCompound();
+            nbt.putString("id", identifier.toString());
+            nbt.putInt("x", this.pos.getX());
+            nbt.putInt("y", this.pos.getY());
+            nbt.putInt("z", this.pos.getZ());
+            return nbt;
+        }
+    }
+    // End crimes agains modding
+
     @Environment(EnvType.CLIENT)
-	@Override
-	public @Nullable Object getRenderAttachmentData() {
-		return mesh;
-	}
+    @Override
+    public @Nullable Object getRenderAttachmentData() {
+        return mesh;
+    }
 
 }

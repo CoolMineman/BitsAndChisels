@@ -29,12 +29,6 @@ repositories {
 		url = uri("https://storage.googleapis.com/devan-maven/")
 	}
 	maven {
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-	maven {
 		url "https://oskarstrom.net/maven"
 		content {
 			includeGroup "net.oskarstrom"
@@ -59,7 +53,6 @@ dependencies {
 	modImplementation("net.devtech:Stacc:1.2.3") { transitive = false }
 	include "net.devtech:Stacc:1.2.1"
 
-	include "curse.maven:xlpackets-390168:3022566" // Avoid Stupid Networking Error AHHHHHHHHHHHHHHHH
 	modImplementation 'net.oskarstrom:DashLoader:2.0'
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
