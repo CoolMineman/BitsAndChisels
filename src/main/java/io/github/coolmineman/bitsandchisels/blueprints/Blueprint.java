@@ -34,18 +34,18 @@ public class Blueprint extends Item {
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
         if (!world.isClient) {
-            if (context.getStack().getSubTag(BLUEPRINT_STRING) == null) {
+            if (context.getStack().getOrCreateSubNbt(BLUEPRINT_STRING) == null) {
                 BlockEntity e1 = world.getBlockEntity(context.getBlockPos());
                 if (e1 instanceof BitsBlockEntity) {
                     BitsBlockEntity e = (BitsBlockEntity) e1;
-                    NbtCompound blueprintTag = context.getStack().getOrCreateSubTag(BLUEPRINT_STRING);
+                    NbtCompound blueprintTag = context.getStack().getOrCreateSubNbt(BLUEPRINT_STRING);
                     BitNbtUtil.write3DBitArray(blueprintTag, e.getStates());
                     return ActionResult.SUCCESS;
                 }
             } else {
                 BlockPos placePos = context.getBlockPos().offset(context.getSide());
                 BlockState[][][] bits = new BlockState[16][16][16];
-                BitNbtUtil.read3DBitArray(context.getStack().getSubTag(BLUEPRINT_STRING), bits);
+                BitNbtUtil.read3DBitArray(context.getStack().getOrCreateSubNbt(BLUEPRINT_STRING), bits);
                 Map<BlockState, IntList> invMap = indexPlayerInventory(context.getPlayer());
                 boolean update = false;
                 for (int i = 0; i < 16; i++) {
@@ -87,7 +87,7 @@ public class Blueprint extends Item {
         for (int i = 0; i < playerEntity.getInventory().size(); i++) {
             ItemStack stack = playerEntity.getInventory().getStack(i);
             if (stack.getItem() == BitsAndChisels.BIT_ITEM) {
-                BlockState itemState = NbtHelper.toBlockState(stack.getSubTag("bit"));
+                BlockState itemState = NbtHelper.toBlockState(stack.getOrCreateSubNbt("bit"));
                 if (!itemState.isAir()) {
                     IntList intList = result.computeIfAbsent(itemState, k -> new IntArrayList(5));
                     intList.add(i);
@@ -99,7 +99,7 @@ public class Blueprint extends Item {
 
     @Override
     public Text getName(ItemStack stack) {
-        return stack.getSubTag(BLUEPRINT_STRING) == null ? new TranslatableText(this.getTranslationKey() + ".unwritten") : super.getName(stack);
+        return stack.getOrCreateSubNbt(BLUEPRINT_STRING) == null ? new TranslatableText(this.getTranslationKey() + ".unwritten") : super.getName(stack);
     }
     
 }

@@ -17,12 +17,12 @@ public class ItemHelpers {
     public static ItemStack addBlockEntityNbt(ItemStack stack, BlockEntity blockEntity) {
         NbtCompound compoundTag = blockEntity.writeNbt(new NbtCompound());
         NbtCompound compoundTag3;
-        stack.putSubTag("BlockEntityTag", compoundTag);
+        stack.setSubNbt("BlockEntityTag", compoundTag);
         compoundTag3 = new NbtCompound();
         NbtList listTag = new NbtList();
         listTag.add(NbtString.of("\"(+NBT)\""));
         compoundTag3.put("Lore", listTag);
-        stack.putSubTag("display", compoundTag3);
+        stack.setSubNbt("display", compoundTag3);
         return stack;
     }
 }

@@ -70,12 +70,12 @@ public class BitUtils {
 
     public static ItemStack getBitItemStack(BlockState state) {
         ItemStack result = new ItemStack(BitsAndChisels.BIT_ITEM);
-        result.putSubTag("bit", NbtHelper.fromBlockState(state));
+        result.setSubNbt("bit", NbtHelper.fromBlockState(state));
         return result;
     }
 
     public static BlockState getBit(ItemStack stack) {
-        return NbtHelper.toBlockState(stack.getSubTag("bit"));
+        return NbtHelper.toBlockState(stack.getOrCreateSubNbt("bit"));
     }
 
     public static boolean canChisel(BlockState state, World world, BlockPos pos) {

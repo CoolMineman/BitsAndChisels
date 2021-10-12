@@ -35,6 +35,7 @@ import net.minecraft.world.BlockRenderView;
 
 public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedModel {
     public static final SpriteIdentifier SPRITE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("bitsandchisels", "block/null"));
+    static boolean frapiwarn = false;
 
     // *Important Stuff
 
@@ -48,10 +49,10 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        var mesh = cache.computeIfAbsent(stack.getTag(), discard -> {
-            NbtCompound tag = stack.getSubTag("BlockEntityTag");
+        Mesh mesh = cache.computeIfAbsent(stack.getNbt(), discard -> {
+            NbtCompound tag = stack.getOrCreateSubNbt("BlockEntityTag");
             if (tag != null) {
-                var bits = new BlockState[16][16][16];
+                BlockState[][][] bits = new BlockState[16][16][16];
                 if (BitNbtUtil.read3DBitArray(tag, bits)) {
                     return BitMeshes.createMesh(bits, null, null);
                 }
@@ -83,7 +84,10 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
 
     @Override
     public List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
-        BitsAndChisels.LOGGER.warn("BakedModel.getQuads was just called, this likely means your renderer doesn't support Fabric rendering API. In that case get one that does, I recommend canvas or indigo.");
+        if (!frapiwarn) {
+            BitsAndChisels.LOGGER.warn("BakedModel.getQuads was just called, this likely means your renderer doesn't support Fabric rendering API. In that case get one that does, I recommend canvas or indigo.");
+            frapiwarn = true;
+        }
         return Collections.emptyList();
     }
 
@@ -108,7 +112,7 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
     }
 
     @Override
-    public Sprite getSprite() {
+    public Sprite getParticleSprite() {
         return SPRITE.getSprite();
     }
 

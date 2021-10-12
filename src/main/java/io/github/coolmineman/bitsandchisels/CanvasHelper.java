@@ -1,9 +1,10 @@
 package io.github.coolmineman.bitsandchisels;
 
-import grondag.frex.api.Renderer;
-import grondag.frex.api.material.MaterialMap;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import io.vram.frex.api.material.MaterialFinder;
+import io.vram.frex.api.material.MaterialMap;
+import io.vram.frex.api.renderer.Renderer;
+import io.vram.frex.api.rendertype.RenderTypeUtil;
+import io.vram.frex.compat.fabric.FabricMaterial;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayers;
@@ -13,11 +14,13 @@ public class CanvasHelper {
     private CanvasHelper() { }
 
     public static final RenderMaterial getMaterial(BlockState state, Sprite sprite) {
-        grondag.frex.api.material.RenderMaterial material = (grondag.frex.api.material.RenderMaterial) MaterialMap.get(state).getMapped(sprite);
+        io.vram.frex.api.material.RenderMaterial material = (io.vram.frex.api.material.RenderMaterial) MaterialMap.get(state).getMapped(sprite);
         if (material != null) {
-            return ((Renderer) RendererAccess.INSTANCE.getRenderer()).materialFinder().copyFrom(material).blendMode(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state))).find();
+            MaterialFinder finder = Renderer.get().materialFinder().copyFrom(material);
+            RenderTypeUtil.toMaterialFinder(finder, RenderLayers.getBlockLayer(state));
+            return FabricMaterial.of(finder.find());
         } else {
-            return ((Renderer) RendererAccess.INSTANCE.getRenderer()).materialFinder().blendMode(BlendMode.fromRenderLayer(RenderLayers.getBlockLayer(state))).find();
+            return FabricMaterial.of(RenderTypeUtil.toMaterial(RenderLayers.getBlockLayer(state)));
         }
     }
 }
