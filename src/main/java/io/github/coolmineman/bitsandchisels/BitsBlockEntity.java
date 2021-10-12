@@ -109,8 +109,9 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
             if (fullcube) {
                 world.setBlockState(pos, states[0][0][0]);
             }
-            if (state.get(BitsBlock.LIGHT_LEVEL) * 4096 != totalLight) {
-                world.setBlockState(pos, state.with(BitsBlock.LIGHT_LEVEL, MathHelper.clamp(totalLight / 4096, 0, 16)), 0);
+            int targetlight = MathHelper.clamp((int)(Math.sqrt(totalLight) * 0.0625 /*16/sqrt(4096)*/), 0, 16);
+            if (state.get(BitsBlock.LIGHT_LEVEL) != targetlight) {
+                world.setBlockState(pos, state.with(BitsBlock.LIGHT_LEVEL, targetlight), 0);
             }
         }
     }
