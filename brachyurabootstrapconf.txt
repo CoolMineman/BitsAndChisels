@@ -1,12 +1,12 @@
 0
-https://github.com/CoolCrabs/brachyura/releases/download/v_aec5ee9097400203b81ff00966d2502293a6a342/javacompilelib-0.2.jar	19BDE1110C347A0819A76B20EE1CEFA1A351381D	javacompilelib-0.2.jar	true
-https://github.com/CoolCrabs/brachyura/releases/download/v_aec5ee9097400203b81ff00966d2502293a6a342/javacompilelib-0.2-sources.jar	15C3D829FB7611A6A527EC429D4DFF92BA1CC90E	javacompilelib-0.2-sources.jar	false
-https://github.com/CoolCrabs/brachyura/releases/download/v_aec5ee9097400203b81ff00966d2502293a6a342/fabricmerge-0.2.jar	AE20F2E864B88E7E379157DA8189C4A3E5C5EFF0	fabricmerge-0.2.jar	true
-https://github.com/CoolCrabs/brachyura/releases/download/v_aec5ee9097400203b81ff00966d2502293a6a342/fabricmerge-0.2-sources.jar	7B267586C8A9395E60A2529F1936862969D8EB8B	fabricmerge-0.2-sources.jar	false
-https://github.com/CoolCrabs/brachyura/releases/download/v_aec5ee9097400203b81ff00966d2502293a6a342/cfr-0.3.jar	0E09C9778D041DB5534E087E5D1A7B2BE9F70E88	cfr-0.3.jar	true
-https://github.com/CoolCrabs/brachyura/releases/download/v_aec5ee9097400203b81ff00966d2502293a6a342/cfr-0.3-sources.jar	22D029B341619A20041348C20A403C2172067BD0	cfr-0.3-sources.jar	false
-https://github.com/CoolCrabs/brachyura/releases/download/v_aec5ee9097400203b81ff00966d2502293a6a342/brachyura-0.7.jar	D7ED670EE3B9337EBFDF2457BD78C9B1E561E438	brachyura-0.7.jar	true
-https://github.com/CoolCrabs/brachyura/releases/download/v_aec5ee9097400203b81ff00966d2502293a6a342/brachyura-0.7-sources.jar	FE73E50B4E31545DDA34B07A4E1EDD56FB94DC95	brachyura-0.7-sources.jar	false
+https://github.com/CoolCrabs/brachyura/releases/download/v_65edde8375a869c923a1d177cd51988748865d7a/javacompilelib-0.2.jar	D796AA04F8DB309E256AA6B301B0E11A074B6397	javacompilelib-0.2.jar	true
+https://github.com/CoolCrabs/brachyura/releases/download/v_65edde8375a869c923a1d177cd51988748865d7a/javacompilelib-0.2-sources.jar	C42CF4890B026B4D9ECCDDC963EA73854158ADEB	javacompilelib-0.2-sources.jar	false
+https://github.com/CoolCrabs/brachyura/releases/download/v_65edde8375a869c923a1d177cd51988748865d7a/fabricmerge-0.2.jar	832EDA1C3D6FFA9A0F783851E9A016763B9D4F6B	fabricmerge-0.2.jar	true
+https://github.com/CoolCrabs/brachyura/releases/download/v_65edde8375a869c923a1d177cd51988748865d7a/fabricmerge-0.2-sources.jar	25994AD547C0D86DD6B2BDBECC923CC5304933F6	fabricmerge-0.2-sources.jar	false
+https://github.com/CoolCrabs/brachyura/releases/download/v_65edde8375a869c923a1d177cd51988748865d7a/cfr-0.4.jar	E05CD860BF36CF5036AF6319ACDCDEEA302BFEBE	cfr-0.4.jar	true
+https://github.com/CoolCrabs/brachyura/releases/download/v_65edde8375a869c923a1d177cd51988748865d7a/cfr-0.4-sources.jar	50836D940D35EAE9678DED1BC94509289608ED62	cfr-0.4-sources.jar	false
+https://github.com/CoolCrabs/brachyura/releases/download/v_65edde8375a869c923a1d177cd51988748865d7a/brachyura-0.12.jar	68CA6E6D6B2CA911947B6DCCBF364FDE9CCF672A	brachyura-0.12.jar	true
+https://github.com/CoolCrabs/brachyura/releases/download/v_65edde8375a869c923a1d177cd51988748865d7a/brachyura-0.12-sources.jar	36E2F52FBC104B45010EF1BA4D898D6900E382D0	brachyura-0.12-sources.jar	false
 https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.2/asm-9.2.jar	81a03f76019c67362299c40e0ba13405f5467bff	asm-9.2.jar	true
 https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.2/asm-9.2-sources.jar	51671fdebd3583f10254fab0e2077ed49c461650	asm-9.2-sources.jar	false
 https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/9.2/asm-analysis-9.2.jar	7487dd756daf96cab9986e44b9d7bcb796a61c10	asm-analysis-9.2.jar	true
@@ -29,3 +29,5 @@ https://maven.fabricmc.net/net/fabricmc/tiny-remapper/0.4.2/tiny-remapper-0.4.2.
 https://maven.fabricmc.net/net/fabricmc/tiny-remapper/0.4.2/tiny-remapper-0.4.2-sources.jar	a523db198bb5a8c9461747118a906ced66577431	tiny-remapper-0.4.2-sources.jar	false
 https://maven.fabricmc.net/net/fabricmc/access-widener/2.0.0/access-widener-2.0.0.jar	f7d873eac6984e21f1477ed7de9c9806b6a302f8	access-widener-2.0.0.jar	true
 https://maven.fabricmc.net/net/fabricmc/access-widener/2.0.0/access-widener-2.0.0-sources.jar	ee1c9aa4c86471a35e74c8410e9ddf051e53b442	access-widener-2.0.0-sources.jar	false
+https://maven.hydos.cf/releases/io/github/coolmineman/trieharder/0.1.2/trieharder-0.1.2.jar	315010c3c7f55dbab6edad9d98c999e5e90758af	trieharder-0.1.2.jar	true
+https://maven.hydos.cf/releases/io/github/coolmineman/trieharder/0.1.2/trieharder-0.1.2-sources.jar	7ebf5a22a91edcea9413e2d24cf1d390f064715e	trieharder-0.1.2-sources.jar	false
