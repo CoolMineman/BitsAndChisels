@@ -11,7 +11,9 @@
     "ParticleYeeter",
     "RedSelectionBoxMixin",
     "BakedQuadAccessor",
-    "BlockStateMixin"
+    "BlockStateMixin",
+    "MinecraftClientMixin",
+    "ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,8 +1,8 @@
 package io.github.coolmineman.bitsandchisels.chisel;
 
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
-import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
 import io.github.coolmineman.bitsandchisels.api.BitUtils;
+import io.github.coolmineman.bitsandchisels.api.client.AirSwingItem;
 import io.github.coolmineman.bitsandchisels.api.client.RedBoxCallback;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -12,8 +12,10 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.network.PacketByteBuf;
@@ -28,7 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayChannelHandler {
+public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayChannelHandler, AirSwingItem {
     public static final Identifier PACKET_ID = new Identifier("bitsandchisels", "smart_chisel_packet");
 
     BlockPos block = null;
@@ -56,29 +58,41 @@ public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayCh
         });
         RedBoxCallback.EVENT.register((redBoxDrawer, matrixStack, vertexConsumer, worldoffsetx, worldoffsety, worldoffsetz) -> {
             MinecraftClient client = MinecraftClient.getInstance();
-            if (client.player.getMainHandStack().getItem() == BitsAndChisels.SMART_CHISEL && haspos1) {
-                HitResult hit = client.crosshairTarget;
-                if (hit.getType() == HitResult.Type.BLOCK) {
-                    Direction direction = ((BlockHitResult)hit).getSide();
-                    BlockPos pos = ((BlockHitResult)hit).getBlockPos();
-                    if (pos.getSquaredDistance(block) > 9) return;
-                    int x = (int) Math.floor(((hit.getPos().getX() - pos.getX()) * 16) + (direction.getOffsetX() * -0.5d));
-                    int y = (int) Math.floor(((hit.getPos().getY() - pos.getY()) * 16) + (direction.getOffsetY() * -0.5d));
-                    int z = (int) Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d));
-                    
-                    int blockXOffset = pos.getX() - block.getX();
-                    int blockYOffset = pos.getY() - block.getY();
-                    int blockZOffset = pos.getZ() - block.getZ();
+            if (client.player.getMainHandStack().getItem() == BitsAndChisels.SMART_CHISEL) {
+                if (haspos1) {
+                    HitResult hit = client.crosshairTarget;
+                    if (hit.getType() == HitResult.Type.BLOCK) {
+                        Direction direction = ((BlockHitResult)hit).getSide();
+                        BlockPos pos = ((BlockHitResult)hit).getBlockPos();
+                        if (pos.getSquaredDistance(block) > 9) return;
+                        int x = (int) Math.floor(((hit.getPos().getX() - pos.getX()) * 16) + (direction.getOffsetX() * -0.5d));
+                        int y = (int) Math.floor(((hit.getPos().getY() - pos.getY()) * 16) + (direction.getOffsetY() * -0.5d));
+                        int z = (int) Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d));
+                        
+                        int blockXOffset = pos.getX() - block.getX();
+                        int blockYOffset = pos.getY() - block.getY();
+                        int blockZOffset = pos.getZ() - block.getZ();
 
-                    int minx = Math.min(bitx, blockXOffset * 16 + x);
-                    int miny = Math.min(bity, blockYOffset * 16 + y);
-                    int minz = Math.min(bitz, blockZOffset * 16 + z);
+                        int minx = Math.min(bitx, blockXOffset * 16 + x);
+                        int miny = Math.min(bity, blockYOffset * 16 + y);
+                        int minz = Math.min(bitz, blockZOffset * 16 + z);
 
-                    int maxx = Math.max(bitx, blockXOffset * 16 + x);
-                    int maxy = Math.max(bity, blockYOffset * 16 + y);
-                    int maxz = Math.max(bitz, blockZOffset * 16 + z);
-                    
-                    redBoxDrawer.drawRedBox(matrixStack, vertexConsumer, block, minx, miny, minz, maxx + 1, maxy + 1, maxz + 1, worldoffsetx, worldoffsety, worldoffsetz);
+                        int maxx = Math.max(bitx, blockXOffset * 16 + x);
+                        int maxy = Math.max(bity, blockYOffset * 16 + y);
+                        int maxz = Math.max(bitz, blockZOffset * 16 + z);
+                        
+                        redBoxDrawer.drawRedBox(matrixStack, vertexConsumer, block, minx, miny, minz, maxx + 1, maxy + 1, maxz + 1, worldoffsetx, worldoffsety, worldoffsetz);
+                    }
+                } else {
+                    HitResult hit = client.crosshairTarget;
+                    if (hit.getType() == HitResult.Type.BLOCK) {
+                        Direction direction = ((BlockHitResult)hit).getSide();
+                        BlockPos pos = ((BlockHitResult)hit).getBlockPos();
+                        int x = (int) Math.floor(((hit.getPos().getX() - pos.getX()) * 16) + (direction.getOffsetX() * -0.5d));
+                        int y = (int) Math.floor(((hit.getPos().getY() - pos.getY()) * 16) + (direction.getOffsetY() * -0.5d));
+                        int z = (int) Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d));
+                        redBoxDrawer.drawRedBox(matrixStack, vertexConsumer, pos, x, y, z, x + 1, y + 1, z + 1, worldoffsetx, worldoffsety, worldoffsetz);
+                    }
                 }
             }
         });
@@ -134,7 +148,6 @@ public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayCh
         });
     }
 
-
     public ActionResult interactBreakBlockClient(PlayerEntity player, World world, BlockPos pos) {
         if (getTime() - lastBreakTick < 5) return ActionResult.CONSUME;
         MinecraftClient client = MinecraftClient.getInstance();
@@ -146,7 +159,7 @@ public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayCh
             int y = (int) Math.floor(((hit.getPos().getY() - pos.getY()) * 16) + (direction.getOffsetY() * -0.5d));
             int z = (int) Math.floor(((hit.getPos().getZ() - pos.getZ()) * 16) + (direction.getOffsetZ() * -0.5d));
             lastBreakTick = getTime();
-            if (world.getBlockEntity(pos) instanceof BitsBlockEntity || BitUtils.exists(BitUtils.getBit(world, pos, x, y, z))) {
+            if (BitUtils.exists(BitUtils.getBit(world, pos, x, y, z))) {
                 if (!haspos1 || pos.getSquaredDistance(block) > 9) {
                     block = pos;
                     bitx = x;
@@ -186,5 +199,10 @@ public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayCh
 
     private static long getTime() {
         return System.currentTimeMillis() / 50;
+    }
+
+    @Override
+    public void airSwing(ClientPlayerEntity player, ItemStack stack) {
+        this.haspos1 = false;
     }
 }

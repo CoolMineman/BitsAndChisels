@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "bitsandchisels",
-  "version": "${version}",
+  "version": "2.5.4",
   "name": "BitsAndChisels",
   "description": "Turn Blocks Into Small Bits With Chisels; Build All The Things",
   "authors": [

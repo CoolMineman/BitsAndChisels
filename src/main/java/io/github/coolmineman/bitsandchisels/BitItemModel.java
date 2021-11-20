@@ -29,7 +29,6 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -85,8 +84,8 @@ public class BitItemModel implements UnbakedModel, BakedModel, FabricBakedModel 
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        if (!stack.hasNbt() || stack.getOrCreateSubNbt("bit") == null) return;
-        transform_state = cache.computeIfAbsent(stack.getNbt(), tag -> NbtHelper.toBlockState(stack.getOrCreateSubNbt("bit")));
+        if (!stack.hasNbt() || stack.getSubNbt("bit") == null) return;
+        transform_state = cache.computeIfAbsent(stack.getNbt(), tag -> BitNbtUtil.toBlockState(stack.getSubNbt("bit")));
         context.pushTransform(TRANSFORM);
         context.fallbackConsumer().accept(MinecraftClient.getInstance().getBlockRenderManager().getModel(transform_state));
         context.popTransform();

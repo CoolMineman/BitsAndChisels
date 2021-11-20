@@ -50,7 +50,7 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
         Mesh mesh = cache.computeIfAbsent(stack.getNbt(), discard -> {
-            NbtCompound tag = stack.getOrCreateSubNbt("BlockEntityTag");
+            NbtCompound tag = stack.getSubNbt("BlockEntityTag");
             if (tag != null) {
                 BlockState[][][] bits = new BlockState[16][16][16];
                 if (BitNbtUtil.read3DBitArray(tag, bits)) {

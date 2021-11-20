@@ -2,7 +2,10 @@ package io.github.coolmineman.bitsandchisels;
 
 import java.util.ArrayList;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtByteArray;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -17,7 +20,7 @@ public class BitNbtUtil {
         NbtList palletteTag = (NbtList) tag.get("palette");
         if (palletteTag == null) return false;
         for (NbtElement statetag : palletteTag) {
-            palette.add(NbtHelper.toBlockState((NbtCompound) statetag));
+            palette.add(BitNbtUtil.toBlockState((NbtCompound) statetag));
         }
         NbtList bits = (NbtList) tag.get("bits");
         NbtByteArray bits2 = (NbtByteArray) tag.get("bits_v2");
@@ -69,8 +72,24 @@ public class BitNbtUtil {
         tag.put("bits_v2", new NbtByteArray(bits));
         NbtList palletteTag = new NbtList();
         for (BlockState state : palette) {
-            palletteTag.add(NbtHelper.fromBlockState(state));
+            palletteTag.add(BitNbtUtil.fromBlockState(state));
         }
         tag.put("palette", palletteTag);
+    }
+
+    public static BlockState toBlockState(@Nullable NbtCompound tag) {
+        if (tag == null) {
+            return Blocks.AIR.getDefaultState();
+        } else {
+            return NbtHelper.toBlockState(tag);
+        }
+    }
+
+    public static NbtCompound fromBlockState(@Nullable BlockState state) {
+        if (state == null) {
+            return NbtHelper.fromBlockState(Blocks.AIR.getDefaultState());
+        } else {
+            return NbtHelper.fromBlockState(state);
+        }
     }
 }

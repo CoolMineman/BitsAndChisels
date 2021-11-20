@@ -2,12 +2,12 @@ package io.github.coolmineman.bitsandchisels.api;
 
 import org.jetbrains.annotations.Nullable;
 
+import io.github.coolmineman.bitsandchisels.BitNbtUtil;
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -64,18 +64,26 @@ public class BitUtils {
         return null;
     }
 
+    public static @Nullable BlockState[][][] getBitArray(World world, BlockPos pos) {
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be instanceof BitsBlockEntity) {
+            return ((BitsBlockEntity)be).getStates();
+        }
+        return null;
+    }
+
     public static boolean exists(@Nullable BlockState bit) {
         return bit != null && !bit.isAir();
     }
 
     public static ItemStack getBitItemStack(BlockState state) {
         ItemStack result = new ItemStack(BitsAndChisels.BIT_ITEM);
-        result.setSubNbt("bit", NbtHelper.fromBlockState(state));
+        result.setSubNbt("bit", BitNbtUtil.fromBlockState(state));
         return result;
     }
 
     public static BlockState getBit(ItemStack stack) {
-        return NbtHelper.toBlockState(stack.getOrCreateSubNbt("bit"));
+        return BitNbtUtil.toBlockState(stack.getSubNbt("bit"));
     }
 
     public static boolean canChisel(BlockState state, World world, BlockPos pos) {

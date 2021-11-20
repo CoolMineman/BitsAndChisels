@@ -23,16 +23,6 @@ public class Buildscript extends FabricProject {
     }
 
     @Override
-    public String getModId() {
-        return "bitsandchisels";
-    }
-
-    @Override
-    public String getVersion() {
-        return "2.5.4";
-    }
-
-    @Override
     public void getModDependencies(ModDependencyCollector d) {
         // Libraries
         String[][] fapiModules = new String[][] {
@@ -61,5 +51,4 @@ public class Buildscript extends FabricProject {
         d.addMaven("https://maven.vram.io", new MavenId("io.vram:frex-fabric-mc117:6.0.46"), ModDependencyFlag.COMPILE);
         d.addMaven("https://oskarstrom.net/maven", new MavenId("net.oskarstrom:DashLoader:2.0"), ModDependencyFlag.COMPILE);
     } 
-
 }
