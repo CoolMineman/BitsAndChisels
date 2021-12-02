@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import io.github.coolmineman.bitsandchisels.mixin.SimpleVoxelShapeFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
@@ -14,6 +13,10 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -21,7 +24,7 @@ import net.minecraft.util.shape.BitSetVoxelSet;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
-public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSerializable, RenderAttachmentBlockEntity {
+public class BitsBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity {
     private BlockState[][][] states;
     @Environment(EnvType.CLIENT)
     protected Mesh mesh;
@@ -48,10 +51,9 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public void writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
         BitNbtUtil.write3DBitArray(tag, states);
-        return tag;
     }
 
     @Override
@@ -59,6 +61,9 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         super.readNbt(tag);
         BitNbtUtil.read3DBitArray(tag, states);
         rebuildShape();
+        if (getWorld() != null && getWorld().isClient) {
+            postFromClientTag();
+        }
     }
 
     public void setState(int x, int y, int z, BlockState state) {
@@ -121,32 +126,25 @@ public class BitsBlockEntity extends BlockEntity implements BlockEntityClientSer
         mesh = BitMeshes.createMesh(states, world, pos);
     }
 
-    @Override
-    public void fromClientTag(NbtCompound tag) {
-        readNbt(tag);
+    public void postFromClientTag() {
         rebuildMesh();
         MinecraftClient.getInstance().worldRenderer.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
-        return writeNbt(tag);
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this, be -> ((BitsBlockEntity)be).createNbt());
+    }
+
+    public void sync() {
+        ((ServerWorld) world).getChunkManager().markForUpdate(getPos());
     }
 
     // Begin crimes agains modding
     @Override
     public NbtCompound toInitialChunkDataNbt() {
-        Identifier identifier = BlockEntityType.getId(this.getType());
-        if (identifier == null) {
-            throw new RuntimeException(this.getClass() + " is missing a mapping! This is a bug!");
-        } else {
-            NbtCompound nbt = new NbtCompound();
-            nbt.putString("id", identifier.toString());
-            nbt.putInt("x", this.pos.getX());
-            nbt.putInt("y", this.pos.getY());
-            nbt.putInt("z", this.pos.getZ());
-            return nbt;
-        }
+        sync();
+        return new NbtCompound();
     }
     // End crimes agains modding
 
