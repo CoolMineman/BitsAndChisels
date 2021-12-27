@@ -9,8 +9,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -114,36 +112,7 @@ public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayCh
                 x1 <= x2 && y1 <= y2 && z1 <= z2 &&
                 ((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)) + ((z2 - z1) * (z2 - z1)) <= 1000000
             ) {
-                World world = player.world;
-                BlockPos.Mutable mut = new BlockPos.Mutable();
-                for (int i = x1; i <= x2; i++) {
-                    for (int j = y1; j <= y2; j++) {
-                        for (int k = z1; k <= z2; k++) {
-                            mut.set(pos.getX() + Math.floorDiv(i, 16), pos.getY() + Math.floorDiv(j, 16), pos.getZ() + Math.floorDiv(k, 16));
-                            int x = Math.floorMod(i, 16);
-                            int y = Math.floorMod(j, 16);
-                            int z = Math.floorMod(k, 16);
-                            BlockState oldstate = BitUtils.getBit(world, mut, x, y, z);
-                            if (BitUtils.exists(oldstate) && BitUtils.setBit(world, mut, x, y, z, Blocks.AIR.getDefaultState())) {
-                                player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate));
-                            }
-                        }
-                    }
-                }
-                int blockx1 = pos.getX() + Math.floorDiv(x1, 16);
-                int blocky1 = pos.getY() + Math.floorDiv(y1, 16);
-                int blockz1 = pos.getZ() + Math.floorDiv(z1, 16);
-                int blockx2 = pos.getX() + Math.floorDiv(x2, 16);
-                int blocky2 = pos.getY() + Math.floorDiv(y2, 16);
-                int blockz2 = pos.getZ() + Math.floorDiv(z2, 16);
-                for (int i = blockx1; i <= blockx2; i++) {
-                    for (int j = blocky1; j <= blocky2; j++) {
-                        for (int k = blockz1; k <= blockz2; k++) {
-                            mut.set(i, j, k);
-                            BitUtils.update(world, mut);
-                        }
-                    }
-                }
+                BitUtils.attemptBreakRegion(player, pos, x1, y1, z1, x2, y2, z2);
             }
         });
     }

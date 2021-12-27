@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Unique;
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.CanvasHelper;
 import io.github.coolmineman.bitsandchisels.duck.CubeRenderStuff;
+import java.util.Random;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -42,9 +43,9 @@ public class BlockStateMixin implements CubeRenderStuff {
             materials = new RenderMaterial[7][];
             for (Direction d : Direction.values()) {
                 BakedModelManager modelman = MinecraftClient.getInstance().getBakedModelManager();
-                List<BakedQuad> dQuads = newModel.getQuads(thiz, d, ThreadLocalRandom.current());
+                List<BakedQuad> dQuads = newModel.getQuads(thiz, d, new Random(0));
                 if (dQuads == null || dQuads.isEmpty()) dQuads = modelman.getMissingModel().getQuads(thiz, d, ThreadLocalRandom.current());
-                BakedQuad[] localquads = dQuads.toArray(new BakedQuad[dQuads.size()]);
+                BakedQuad[] localquads = dQuads.toArray(new BakedQuad[0]);
                 quads[d.getId()] = localquads;
                 materials[d.getId()] = new RenderMaterial[localquads.length];
                 for (int i = 0; i < localquads.length; i++) {

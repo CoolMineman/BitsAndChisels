@@ -8,8 +8,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -47,14 +45,9 @@ public class DiamondChisel extends ToolItem implements ServerPlayNetworking.Play
         int z = buf.readInt();
         server.execute(() -> {
             // Execute on the main thread
-            World world = player.world;
             ItemStack stack = player.getMainHandStack();
-            if (world.canSetBlock(pos) && stack.getItem() == BitsAndChisels.DIAMOND_CHISEL && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
-                BlockState oldstate = BitUtils.getBit(world, pos, x, y, z);
-                if (oldstate != null && BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState())) {
-                    BitUtils.update(world, pos);
-                    if (!oldstate.isAir()) player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate));
-                }
+            if (player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 && stack.getItem() == BitsAndChisels.DIAMOND_CHISEL) {
+                BitUtils.attemptBreak(player, pos, x, y, z);
             }
         });
     }

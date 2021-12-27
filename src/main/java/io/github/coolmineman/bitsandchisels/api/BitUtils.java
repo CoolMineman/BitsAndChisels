@@ -5,9 +5,13 @@ import org.jetbrains.annotations.Nullable;
 import io.github.coolmineman.bitsandchisels.BitNbtUtil;
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -88,5 +92,55 @@ public class BitUtils {
 
     public static boolean canChisel(BlockState state, World world, BlockPos pos) {
         return state.getHardness(world, pos) <= 100 && state.getHardness(world, pos) >= 0;
+    }
+    
+    public static void attemptBreak(ServerPlayerEntity player, BlockPos pos, int x, int y, int z) {
+        World world = player.world;
+        if (world.canSetBlock(pos)) {
+            BlockState oldstate = BitUtils.getBit(world, pos, x, y, z);
+            if (oldstate != null && BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState())) {
+                BitUtils.update(world, pos);
+                if (!oldstate.isAir()) player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate));
+            }
+        }
+    }
+    
+    public static void attemptBreakRegion(ServerPlayerEntity player, BlockPos rootPos, int x1, int y1, int z1, int x2, int y2, int z2) {
+        World world = player.world;
+        BlockPos.Mutable mut = new BlockPos.Mutable();
+        Object2IntArrayMap<BlockState> drops = new Object2IntArrayMap<>();
+        for (int i = x1; i <= x2; i++) {
+            for (int j = y1; j <= y2; j++) {
+                for (int k = z1; k <= z2; k++) {
+                    mut.set(rootPos.getX() + Math.floorDiv(i, 16), rootPos.getY() + Math.floorDiv(j, 16), rootPos.getZ() + Math.floorDiv(k, 16));
+                    int x = Math.floorMod(i, 16);
+                    int y = Math.floorMod(j, 16);
+                    int z = Math.floorMod(k, 16);
+                    BlockState oldstate = BitUtils.getBit(world, mut, x, y, z);
+                    if (BitUtils.exists(oldstate) && BitUtils.setBit(world, mut, x, y, z, Blocks.AIR.getDefaultState())) {
+                        drops.put(oldstate, drops.getOrDefault(oldstate, 0) + 1);
+                    }
+                }
+            }
+        }
+        int blockx1 = rootPos.getX() + Math.floorDiv(x1, 16);
+        int blocky1 = rootPos.getY() + Math.floorDiv(y1, 16);
+        int blockz1 = rootPos.getZ() + Math.floorDiv(z1, 16);
+        int blockx2 = rootPos.getX() + Math.floorDiv(x2, 16);
+        int blocky2 = rootPos.getY() + Math.floorDiv(y2, 16);
+        int blockz2 = rootPos.getZ() + Math.floorDiv(z2, 16);
+        for (int i = blockx1; i <= blockx2; i++) {
+            for (int j = blocky1; j <= blocky2; j++) {
+                for (int k = blockz1; k <= blockz2; k++) {
+                    mut.set(i, j, k);
+                    BitUtils.update(world, mut);
+                }
+            }
+        }
+        for (Object2IntMap.Entry<BlockState> e : drops.object2IntEntrySet()) {
+            ItemStack stack = BitUtils.getBitItemStack(e.getKey());
+            stack.setCount(e.getIntValue());
+            player.getInventory().offerOrDrop(stack);
+        }
     }
 }

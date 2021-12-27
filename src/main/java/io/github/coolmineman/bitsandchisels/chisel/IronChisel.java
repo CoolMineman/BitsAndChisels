@@ -8,8 +8,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -46,20 +44,9 @@ public class IronChisel extends ToolItem implements ServerPlayNetworking.PlayCha
         int z = buf.readInt();
         server.execute(() -> {
             // Execute on the main thread
-            World world = player.world;
             ItemStack stack = player.getMainHandStack();
-            if (world.canSetBlock(pos) && stack.getItem() == BitsAndChisels.IRON_CHISEL && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 4; j++) {
-                        for (int k = 0; k < 4; k++) {
-                            BlockState oldstate = BitUtils.getBit(world, pos, x + i, y + j, z + k);
-                            if (BitUtils.exists(oldstate) && BitUtils.setBit(world, pos, x + i, y + j, z + k, Blocks.AIR.getDefaultState())) {
-                                player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate));
-                            }
-                        }
-                    }
-                }
-                BitUtils.update(world, pos);
+            if (stack.getItem() == BitsAndChisels.IRON_CHISEL && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
+                BitUtils.attemptBreakRegion(player, pos, x, y, z, x + 3, y + 3, z + 3);
             }
         });
     }
