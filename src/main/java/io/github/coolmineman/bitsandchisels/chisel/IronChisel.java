@@ -45,7 +45,11 @@ public class IronChisel extends ToolItem implements ServerPlayNetworking.PlayCha
         server.execute(() -> {
             // Execute on the main thread
             ItemStack stack = player.getMainHandStack();
-            if (stack.getItem() == BitsAndChisels.IRON_CHISEL && player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81) {
+            if (
+                    BitsAndChisels.landClaimProvider.canBreak(player, pos) &&
+                    stack.getItem() == BitsAndChisels.IRON_CHISEL &&
+                    player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81
+            ) {
                 BitUtils.attemptBreakRegion(player, pos, x, y, z, x + 3, y + 3, z + 3);
             }
         });

@@ -52,6 +52,8 @@ public class Buildscript extends FabricProject {
         d.addMaven("https://maven.shedaniel.me/", new MavenId("me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.247-alpha"), ModDependencyFlag.COMPILE);
         d.addMaven("https://maven.vram.io", new MavenId("io.vram:frex-fabric-mc117:6.0.46"), ModDependencyFlag.COMPILE);
         d.addMaven("https://oskarstrom.net/maven", new MavenId("net.oskarstrom:DashLoader:2.0"), ModDependencyFlag.COMPILE);
+        d.addMaven("https://gitlab.com/api/v4/projects/21830712/packages/maven", new MavenId("io.github.flemmli97", "flan", "1.18-1.6.6:fabric-api"), ModDependencyFlag.COMPILE);
+        d.addMaven("https://gitlab.com/api/v4/projects/21830712/packages/maven", new MavenId("io.github.flemmli97", "flan", "1.18-1.6.6:fabric"), ModDependencyFlag.RUNTIME);
     }
 
     @Override

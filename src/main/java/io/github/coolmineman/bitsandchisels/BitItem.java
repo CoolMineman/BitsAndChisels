@@ -71,6 +71,9 @@ public class BitItem extends Item implements ServerPlayNetworking.PlayChannelHan
                     for (int j = y1; j <= y2; j++) {
                         for (int k = z1; k <= z2; k++) {
                             mut.set(pos.getX() + Math.floorDiv(i, 16), pos.getY() + Math.floorDiv(j, 16), pos.getZ() + Math.floorDiv(k, 16));
+                            if (!BitsAndChisels.landClaimProvider.canPlace(player, mut)) {
+                                continue;
+                            }
                             int x = Math.floorMod(i, 16);
                             int y = Math.floorMod(j, 16);
                             int z = Math.floorMod(k, 16);

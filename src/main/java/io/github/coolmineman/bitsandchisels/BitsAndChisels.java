@@ -1,5 +1,6 @@
 package io.github.coolmineman.bitsandchisels;
 
+import io.github.coolmineman.bitsandchisels.claim.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,6 +44,8 @@ public class BitsAndChisels implements ModInitializer {
 
 	public static final BitItem BIT_ITEM = new BitItem(new Item.Settings().maxCount(1_000_000_000));
 
+	public static LandClaimProvider landClaimProvider = new DummyLandClaimProvider();
+
 	//Hack around "Cannot reference a field before it is defined"
 	private static ItemStack getDiamondChiselStack() {
 		return new ItemStack(DIAMOND_CHISEL);
@@ -62,6 +65,10 @@ public class BitsAndChisels implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier(MODID, "bit_item"), BIT_ITEM);
 		Registry.register(Registry.ITEM, new Identifier(MODID, "wrench"), WRENCH_ITEM);
 		Registry.register(Registry.ITEM, new Identifier(MODID, "blueprint"), BLUEPRINT);
+
+		if (FabricLoader.getInstance().isModLoaded("flan")) {
+			landClaimProvider = new FlanLandClaimProvider();
+		}
 	}
 	
 }

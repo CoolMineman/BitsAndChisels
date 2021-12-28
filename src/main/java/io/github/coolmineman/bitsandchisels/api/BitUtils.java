@@ -113,6 +113,9 @@ public class BitUtils {
             for (int j = y1; j <= y2; j++) {
                 for (int k = z1; k <= z2; k++) {
                     mut.set(rootPos.getX() + Math.floorDiv(i, 16), rootPos.getY() + Math.floorDiv(j, 16), rootPos.getZ() + Math.floorDiv(k, 16));
+                    if (!BitsAndChisels.landClaimProvider.canBreak(player, mut)) {
+                        continue;
+                    }
                     int x = Math.floorMod(i, 16);
                     int y = Math.floorMod(j, 16);
                     int z = Math.floorMod(k, 16);
