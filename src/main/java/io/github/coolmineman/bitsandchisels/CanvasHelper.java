@@ -13,7 +13,7 @@ import net.minecraft.client.texture.Sprite;
 public class CanvasHelper {
     private CanvasHelper() { }
 
-    public static final RenderMaterial getMaterial(BlockState state, Sprite sprite) {
+    public static RenderMaterial getMaterial(BlockState state, Sprite sprite) {
         io.vram.frex.api.material.RenderMaterial material = MaterialMap.get(state).getMapped(sprite);
         if (material != null) {
             MaterialFinder finder = Renderer.get().materials().materialFinder().copyFrom(material);
