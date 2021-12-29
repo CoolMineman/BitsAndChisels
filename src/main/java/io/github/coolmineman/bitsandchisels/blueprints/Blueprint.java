@@ -51,7 +51,7 @@ public class Blueprint extends Item implements CauldronBehavior {
                     for (int j = 0; j < 16; j++) {
                         for (int k = 0; k < 16; k++) {
                             BlockState bitState = bits[i][j][k];
-                            if (BitUtils.canPlace(world, placePos, i, j, k)) {
+                            if (BitUtils.canPlace(context.getPlayer(), placePos, i, j, k)) {
                                 if (context.getPlayer().isCreative()) {
                                     if (BitUtils.setBit(world, placePos, i, j, k, bitState)) update = true;
                                 } else {

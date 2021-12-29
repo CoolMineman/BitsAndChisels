@@ -5,11 +5,13 @@ import org.jetbrains.annotations.Nullable;
 import io.github.coolmineman.bitsandchisels.BitNbtUtil;
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
+import io.github.coolmineman.bitsandchisels.FlanIsStupid;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +47,10 @@ public class BitUtils {
         }
     }
 
-    public static boolean canPlace(World world, BlockPos block, int x, int y, int z) {
+    public static boolean canPlace(PlayerEntity player, BlockPos block, int x, int y, int z) {
+        if (BitsAndChisels.FLAN && player instanceof ServerPlayerEntity && !FlanIsStupid.canPlace((ServerPlayerEntity) player, block)) return false;
+        World world = player.getEntityWorld();
+        if (!world.canPlayerModifyAt(player, block)) return false;
         if (world.getBlockState(block).isAir()) {
             return true;
         }
@@ -55,6 +60,14 @@ public class BitUtils {
         }
         return false;
     }
+    
+    public static boolean canBreak(PlayerEntity player, BlockPos block, int x, int y, int z) {
+        if (BitsAndChisels.FLAN && player instanceof ServerPlayerEntity && !FlanIsStupid.canBreak((ServerPlayerEntity) player, block)) return false;
+        World world = player.getEntityWorld();
+        if (!world.canSetBlock(block)) return false;
+        if (!world.canPlayerModifyAt(player, block)) return false;
+        return true;
+    }
 
     public static @Nullable BlockState getBit(World world, BlockPos block, int x, int y, int z) {
         BlockState state = world.getBlockState(block);
@@ -62,7 +75,7 @@ public class BitUtils {
         if (e1 instanceof BitsBlockEntity) {
             BitsBlockEntity e = (BitsBlockEntity) e1;
             return e.getState(x, y, z);
-        } else if (!state.isOf(BitsAndChisels.BITS_BLOCK) && canChisel(state, world, block) && state.isFullCube(world, block)) {
+        } else if (!state.isOf(BitsAndChisels.BITS_BLOCK) && canBeChiseled(state, world, block) && state.isFullCube(world, block)) {
             return state;
         }
         return null;
@@ -90,17 +103,17 @@ public class BitUtils {
         return BitNbtUtil.toBlockState(stack.getSubNbt("bit"));
     }
 
-    public static boolean canChisel(BlockState state, World world, BlockPos pos) {
+    public static boolean canBeChiseled(BlockState state, World world, BlockPos pos) {
         return state.getHardness(world, pos) <= 100 && state.getHardness(world, pos) >= 0;
     }
     
     public static void attemptBreak(ServerPlayerEntity player, BlockPos pos, int x, int y, int z) {
-        World world = player.world;
-        if (world.canSetBlock(pos)) {
+        if (canBreak(player, pos, x, y, z)) {
+            World world = player.world;
             BlockState oldstate = BitUtils.getBit(world, pos, x, y, z);
-            if (oldstate != null && BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState())) {
+            if (BitUtils.exists(oldstate) && BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState())) {
                 BitUtils.update(world, pos);
-                if (!oldstate.isAir()) player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate));
+                player.getInventory().offerOrDrop(BitUtils.getBitItemStack(oldstate));
             }
         }
     }
@@ -116,9 +129,11 @@ public class BitUtils {
                     int x = Math.floorMod(i, 16);
                     int y = Math.floorMod(j, 16);
                     int z = Math.floorMod(k, 16);
-                    BlockState oldstate = BitUtils.getBit(world, mut, x, y, z);
-                    if (BitUtils.exists(oldstate) && BitUtils.setBit(world, mut, x, y, z, Blocks.AIR.getDefaultState())) {
-                        drops.put(oldstate, drops.getOrDefault(oldstate, 0) + 1);
+                    if (canBreak(player, mut, x, y, z)) {
+                        BlockState oldstate = BitUtils.getBit(world, mut, x, y, z);
+                        if (BitUtils.exists(oldstate) && BitUtils.setBit(world, mut, x, y, z, Blocks.AIR.getDefaultState())) {
+                            drops.put(oldstate, drops.getOrDefault(oldstate, 0) + 1);
+                        }
                     }
                 }
             }

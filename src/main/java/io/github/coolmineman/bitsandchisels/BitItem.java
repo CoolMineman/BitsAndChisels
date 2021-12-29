@@ -211,7 +211,7 @@ public class BitItem extends Item implements ServerPlayNetworking.PlayChannelHan
                 z += 16;
             }
 
-            if (BitUtils.canPlace(context.getWorld(), pos, x, y, z)) {
+            if (BitUtils.canPlace(context.getPlayer(), pos, x, y, z)) {
                 if (context.getPlayer().isSneaking()) {
                     if (haspos1) {
                         PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
