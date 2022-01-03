@@ -27,6 +27,7 @@ public class BitsBlockEntity extends BlockEntity implements RenderAttachmentBloc
     @Environment(EnvType.CLIENT)
     protected Mesh mesh;
     protected VoxelShape shape = VoxelShapes.fullCube();
+    protected NbtCompound nbtCache;
 
     public BitsBlockEntity(BlockPos pos, BlockState state) {
         this(Blocks.AIR.getDefaultState(), pos, state);
@@ -51,7 +52,12 @@ public class BitsBlockEntity extends BlockEntity implements RenderAttachmentBloc
     @Override
     public void writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
-        BitNbtUtil.write3DBitArray(tag, states);
+        if (nbtCache == null) {
+            BitsAndChisels.LOGGER.error("NbtCache should not be null!");
+            BitNbtUtil.write3DBitArray(tag, states);
+        } else {
+            tag.copyFrom(nbtCache);
+        }
     }
 
     @Override
@@ -61,7 +67,15 @@ public class BitsBlockEntity extends BlockEntity implements RenderAttachmentBloc
         rebuildShape();
         if (getWorld() != null && getWorld().isClient) {
             postFromClientTag();
+        } else {
+            rebuildNbtCache();
         }
+    }
+    
+    private void rebuildNbtCache() {
+        NbtCompound c = new NbtCompound();
+        BitNbtUtil.write3DBitArray(c, states);
+        nbtCache = c;
     }
 
     public void setState(int x, int y, int z, BlockState state) {
@@ -77,6 +91,7 @@ public class BitsBlockEntity extends BlockEntity implements RenderAttachmentBloc
 
     public void rebuildServer() {
         rebuildShape();
+        rebuildNbtCache();
     }
 
     public BlockState getState(int x, int y, int z) {
