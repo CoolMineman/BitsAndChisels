@@ -4,5 +4,7 @@
     "item.bitsandchisels.diamond_chisel": "简易钻石凿",
     "item.bitsandchisels.iron_chisel": "简易铁凿",
     "item.bitsandchisels.wrench": "扳手 (凿雕工艺)",
+    "item.bitsandchisels.blueprint.unwritten": "蓝图（未写入）",
+    "item.bitsandchisels.blueprint": "蓝图",
     "block.bitsandchisels.bits_block": "雕凿碎屑块"
 }
