@@ -46,7 +46,7 @@ public class DiamondChisel extends ToolItem implements ServerPlayNetworking.Play
         server.execute(() -> {
             // Execute on the main thread
             ItemStack stack = player.getMainHandStack();
-            if (player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 && stack.getItem() == BitsAndChisels.DIAMOND_CHISEL) {
+            if (player.getBlockPos().getSquaredDistance(pos) < 81 && stack.getItem() == BitsAndChisels.DIAMOND_CHISEL) {
                 BitUtils.attemptBreak(player, pos, x, y, z);
             }
         });

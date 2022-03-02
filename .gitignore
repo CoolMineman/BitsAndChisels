@@ -4,5 +4,10 @@ build
 run
 netbeans
 .idea
-main.iml
-out
+*.launch
+*.iml
+.classpath
+.project
+.settings
+/.apt_generated/
+.factorypath

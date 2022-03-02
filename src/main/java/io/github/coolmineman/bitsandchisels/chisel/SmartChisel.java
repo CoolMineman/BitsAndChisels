@@ -108,7 +108,7 @@ public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayCh
         server.execute(() -> {
             if (
                 player.getMainHandStack().getItem() == BitsAndChisels.SMART_CHISEL &&
-                player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 &&
+                player.getBlockPos().getSquaredDistance(pos) < 81 &&
                 x1 <= x2 && y1 <= y2 && z1 <= z2 &&
                 ((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)) + ((z2 - z1) * (z2 - z1)) <= 1000000
             ) {

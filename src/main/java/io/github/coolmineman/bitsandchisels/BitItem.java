@@ -58,7 +58,7 @@ public class BitItem extends Item implements ServerPlayNetworking.PlayChannelHan
             // Execute on the main thread
             if (
                 player.getStackInHand(hand).getItem() == BitsAndChisels.BIT_ITEM &&
-                player.getBlockPos().getSquaredDistance(pos.getX(), pos.getY(), pos.getZ(), true) < 81 &&
+                player.getBlockPos().getSquaredDistance(pos) < 81 &&
                 x1 <= x2 && y1 <= y2 && z1 <= z2 &&
                 ((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)) + ((z2 - z1) * (z2 - z1)) <= 1000000
             ) {
