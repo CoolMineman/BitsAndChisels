@@ -35,6 +35,14 @@ public class DiamondChisel extends ToolItem implements ServerPlayNetworking.Play
     public DiamondChisel(Settings settings) {
         super(ToolMaterials.STONE, settings);
         ServerPlayNetworking.registerGlobalReceiver(PACKET_ID, this);
+        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+            Item i = player.getStackInHand(hand).getItem();
+            if (i instanceof DiamondChisel) {
+                if (!world.isClient) return ActionResult.FAIL;
+                return ((DiamondChisel)i).interactBreakBlockClient(player, world, pos);
+            }
+            return ActionResult.PASS;
+        });
     }
 
     @Override
@@ -53,13 +61,6 @@ public class DiamondChisel extends ToolItem implements ServerPlayNetworking.Play
     }
 
     public void initClient() {
-        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            Item i = player.getStackInHand(hand).getItem();
-            if (i instanceof DiamondChisel) {
-                return ((DiamondChisel)i).interactBreakBlockClient(player, world, pos);
-            }
-            return ActionResult.PASS;
-        });
         RedBoxCallback.EVENT.register((redBoxDrawer, matrixStack, vertexConsumer, worldoffsetx, worldoffsety, worldoffsetz) -> {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player.getMainHandStack().getItem() == BitsAndChisels.DIAMOND_CHISEL) {

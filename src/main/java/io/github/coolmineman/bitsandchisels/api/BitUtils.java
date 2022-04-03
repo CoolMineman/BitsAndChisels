@@ -27,7 +27,7 @@ public class BitUtils {
             world.setBlockState(block, BitsAndChisels.BITS_BLOCK.getDefaultState());
         } else if (!target_state.isOf(BitsAndChisels.BITS_BLOCK) && target_state.isFullCube(world, block) && e1 == null) {
             world.setBlockState(block, BitsAndChisels.BITS_BLOCK.getDefaultState(), 0);
-            world.addBlockEntity(new BitsBlockEntity(target_state, block, BitsAndChisels.BITS_BLOCK.getDefaultState()));
+            world.addBlockEntity(new BitsBlockEntity(target_state, block, BitsAndChisels.BITS_BLOCK.getDefaultState(), true));
         }
         e1 = world.getBlockEntity(block);
         if (e1 instanceof BitsBlockEntity) {

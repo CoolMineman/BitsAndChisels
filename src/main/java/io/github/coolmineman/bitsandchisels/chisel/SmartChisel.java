@@ -44,16 +44,17 @@ public class SmartChisel extends ToolItem implements ServerPlayNetworking.PlayCh
     public SmartChisel(Settings settings) {
         super(ToolMaterials.IRON, settings);
         ServerPlayNetworking.registerGlobalReceiver(PACKET_ID, this);
-    }
-
-    public void initClient() {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
             Item i = player.getStackInHand(hand).getItem();
             if (i instanceof SmartChisel) {
+                if (!world.isClient) return ActionResult.FAIL;
                 return ((SmartChisel)i).interactBreakBlockClient(player, world, pos);
             }
             return ActionResult.PASS;
         });
+    }
+
+    public void initClient() {
         RedBoxCallback.EVENT.register((redBoxDrawer, matrixStack, vertexConsumer, worldoffsetx, worldoffsety, worldoffsetz) -> {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player.getMainHandStack().getItem() == BitsAndChisels.SMART_CHISEL) {

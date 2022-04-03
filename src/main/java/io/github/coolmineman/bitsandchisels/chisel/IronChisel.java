@@ -34,6 +34,14 @@ public class IronChisel extends ToolItem implements ServerPlayNetworking.PlayCha
     public IronChisel(Settings settings) {
         super(ToolMaterials.STONE, settings);
         ServerPlayNetworking.registerGlobalReceiver(PACKET_ID, this);
+        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+            Item i = player.getStackInHand(hand).getItem();
+            if (i instanceof IronChisel) {
+                if (!world.isClient) return ActionResult.FAIL;
+                return ((IronChisel)i).interactBreakBlockClient(player, world, pos);
+            }
+            return ActionResult.PASS;
+        });
     }
 
     @Override
@@ -52,13 +60,6 @@ public class IronChisel extends ToolItem implements ServerPlayNetworking.PlayCha
     }
 
     public void initClient() {
-        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            Item i = player.getStackInHand(hand).getItem();
-            if (i instanceof IronChisel) {
-                return ((IronChisel)i).interactBreakBlockClient(player, world, pos);
-            }
-            return ActionResult.PASS;
-        });
         RedBoxCallback.EVENT.register((redBoxDrawer, matrixStack, vertexConsumer, worldoffsetx, worldoffsety, worldoffsetz) -> {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player.getMainHandStack().getItem() == BitsAndChisels.IRON_CHISEL) {
