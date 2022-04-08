@@ -21,12 +21,54 @@ public class WrenchItem extends Item {
             BlockEntity e1 = context.getWorld().getBlockEntity(context.getBlockPos());
             if (e1 instanceof BitsBlockEntity) {
                 BitsBlockEntity e = (BitsBlockEntity) e1;
-                rotate(context.getSide().getAxis(), e);
+                if (context.getPlayer().isSneaking()){
+                    invert(context.getSide().getAxis(), e);
+                }
+                else {
+                    rotate(context.getSide().getAxis(), e);
+                }
+
                 return ActionResult.SUCCESS;
             }
         }
         return ActionResult.PASS;
     }
+    void invert(Axis axis, BitsBlockEntity e) {
+        BlockState[][][] rotated = new BlockState[16][16][16];
+        switch(axis) {
+            case X:
+                for (int i = 0; i < 16; i++) {
+                    for (int j = 0; j < 16; j++) {
+                        for (int k = 0; k < 16; k++) {
+                            rotated[i][j][k] = e.getState(i, j, -k+15);
+                        }
+                    }
+                }
+                break;
+            case Y:
+                for (int i = 0; i < 16; i++) {
+                    for (int j = 0; j < 16; j++) {
+                        for (int k = 0; k < 16; k++) {
+                            rotated[i][j][k] = e.getState( i, -j+15,k);
+                        }
+                    }
+                }
+                break;
+            case Z:
+                for (int i = 0; i < 16; i++) {
+                    for (int j = 0; j < 16; j++) {
+                        for (int k = 0; k < 16; k++) {
+                            rotated[i][j][k] = e.getState(-i+15, j, k);
+                        }
+                    }
+                }
+                break;
+        }
+        e.setStates(rotated);
+        e.rebuildServer();
+        e.sync();
+    }
+
 
     //Rotation Algorithm from https://stackoverflow.com/questions/53110374/how-to-rotate-2-d-array-in-java, extended to 3D
     void rotate(Axis axis, BitsBlockEntity e) {
