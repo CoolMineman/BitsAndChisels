@@ -83,6 +83,7 @@ public class BitsBlockEntity extends BlockEntity implements RenderAttachmentBloc
 
     public void setState(int x, int y, int z, BlockState state) {
         states[x][y][z] = state;
+        alive = true;
     }
 
     /**

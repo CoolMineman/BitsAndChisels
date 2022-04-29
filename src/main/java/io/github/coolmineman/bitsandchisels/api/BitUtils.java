@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import io.github.coolmineman.bitsandchisels.BitNbtUtil;
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.BitsBlockEntity;
-import io.github.coolmineman.bitsandchisels.FlanIsStupid;
+import io.github.coolmineman.bitsandchisels.claimsgarbage.StupidUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.block.BlockState;
@@ -48,7 +48,7 @@ public class BitUtils {
     }
 
     public static boolean canPlace(PlayerEntity player, BlockPos block, int x, int y, int z) {
-        if (BitsAndChisels.FLAN && player instanceof ServerPlayerEntity && !FlanIsStupid.canPlace((ServerPlayerEntity) player, block)) return false;
+        if (player instanceof ServerPlayerEntity && !StupidUtil.canPlace((ServerPlayerEntity) player, block)) return false;
         World world = player.getEntityWorld();
         if (!world.canPlayerModifyAt(player, block)) return false;
         if (world.getBlockState(block).isAir()) {
@@ -62,7 +62,7 @@ public class BitUtils {
     }
     
     public static boolean canBreak(PlayerEntity player, BlockPos block, int x, int y, int z) {
-        if (BitsAndChisels.FLAN && player instanceof ServerPlayerEntity && !FlanIsStupid.canBreak((ServerPlayerEntity) player, block)) return false;
+        if (player instanceof ServerPlayerEntity && !StupidUtil.canBreak((ServerPlayerEntity) player, block)) return false;
         World world = player.getEntityWorld();
         if (!world.canSetBlock(block)) return false;
         if (!world.canPlayerModifyAt(player, block)) return false;

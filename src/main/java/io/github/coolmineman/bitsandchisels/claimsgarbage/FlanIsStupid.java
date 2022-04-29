@@ -1,4 +1,4 @@
-package io.github.coolmineman.bitsandchisels;
+package io.github.coolmineman.bitsandchisels.claimsgarbage;
 
 import io.github.flemmli97.flan.api.ClaimHandler;
 import io.github.flemmli97.flan.api.permission.ClaimPermission;
@@ -10,14 +10,14 @@ import net.minecraft.util.math.BlockPos;
  * Because tracking down every last setBlockState mod and expecting them to use your questionable API is sustainable
  * Credit orlouge original code
  */
-public class FlanIsStupid {
-    private FlanIsStupid() { }
+public enum FlanIsStupid implements Stupid {
+    INSTANCE;
     
-    public static boolean canBreak(ServerPlayerEntity player, BlockPos pos) {
+    public boolean canBreak(ServerPlayerEntity player, BlockPos pos) {
         return checkPermission(player, pos, PermissionRegistry.BREAK);
     }
     
-    public static boolean canPlace(ServerPlayerEntity player, BlockPos pos) {
+    public boolean canPlace(ServerPlayerEntity player, BlockPos pos) {
         return checkPermission(player, pos, PermissionRegistry.PLACE);
     }
     

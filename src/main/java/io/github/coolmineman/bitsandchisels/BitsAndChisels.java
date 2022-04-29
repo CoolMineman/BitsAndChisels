@@ -29,7 +29,6 @@ public class BitsAndChisels implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("BitsAndChisels");
 
 	public static final boolean CANVAS = FabricLoader.getInstance().isModLoaded("canvas");
-        public static final boolean FLAN = FabricLoader.getInstance().isModLoaded("flan");
 
 	public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.create(new Identifier(MODID, MODID)).icon(BitsAndChisels::getDiamondChiselStack).build();
 
