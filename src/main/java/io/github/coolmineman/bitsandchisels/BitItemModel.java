@@ -57,7 +57,7 @@ public class BitItemModel implements UnbakedModel, BakedModel, FabricBakedModel 
     private static final QuadTransform TRANSFORM = quad -> {
         BlockColorProvider colorthing = ColorProviderRegistry.BLOCK.get(transform_state.getBlock());
         if (colorthing != null) {
-            int color = 0xFF000000 | colorthing.getColor(transform_state, null, null, quad.colorIndex());
+            int color = 0xFF000000 | ColorPolice.getBlockColor(transform_state, null, null, quad.colorIndex());
             quad.spriteColor(0, color, color, color, color);
         }
         return true;

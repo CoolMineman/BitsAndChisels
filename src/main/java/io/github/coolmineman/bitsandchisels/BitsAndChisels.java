@@ -1,7 +1,7 @@
 package io.github.coolmineman.bitsandchisels;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.coolmineman.bitsandchisels.blueprints.Blueprint;
 import io.github.coolmineman.bitsandchisels.chisel.DiamondChisel;
@@ -26,7 +26,7 @@ public class BitsAndChisels implements ModInitializer {
 
 	public static final String MODID = "bitsandchisels";
 
-	public static final Logger LOGGER = LogManager.getLogger("BitsAndChisels");
+	public static final Logger LOGGER = LoggerFactory.getLogger("BitsAndChisels");
 
 	public static final boolean CANVAS = FabricLoader.getInstance().isModLoaded("canvas");
 

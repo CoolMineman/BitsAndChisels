@@ -154,6 +154,7 @@ public class BitsBlockEntity extends BlockEntity implements RenderAttachmentBloc
     }
 
     public void sync() {
+        markDirty();
         ((ServerWorld) world).getChunkManager().markForUpdate(getPos());
     }
 

@@ -163,7 +163,7 @@ public class BitMeshes {
             MutableQuadView quad = emitter.fromVanilla(vanillaQuad, cubeRenderStuff.getMaterials(d.getId())[z], d);
             BitMeshes.transform(quad, d, minx, miny, minz, maxx, maxy, maxz, tmp);
             if (vanillaQuad.hasColor()) {
-                int color = 0xFF000000 | MinecraftClient.getInstance().getBlockColors().getColor(state, world, pos, vanillaQuad.getColorIndex());
+                int color = 0xFF000000 | ColorPolice.getBlockColor(state, world, pos, vanillaQuad.getColorIndex());
                 quad.spriteColor(0, color, color, color, color);
             }
             if (!canCull(d, minx, miny, minz)) quad.cullFace(null);
