@@ -13,7 +13,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
@@ -72,7 +72,7 @@ public class ColorPolice {
     }
 
     static void stopYouveViolatedTheLaw(String message) {
-        MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(new LiteralText(message));
+        MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.literal(message));
         LOGGER.error(message);
     }
 }

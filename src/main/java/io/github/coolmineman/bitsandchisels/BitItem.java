@@ -17,7 +17,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -269,7 +268,7 @@ public class BitItem extends Item implements ServerPlayNetworking.PlayChannelHan
     @Override
     public Text getName(ItemStack stack) {
         BlockState state = stack.getSubNbt("bit") != null ? BitNbtUtil.toBlockState(stack.getSubNbt("bit")) : Blocks.AIR.getDefaultState();
-        return new TranslatableText(this.getTranslationKey(stack), new TranslatableText(state.getBlock().getTranslationKey()));
+        return Text.translatable(this.getTranslationKey(stack), Text.translatable(state.getBlock().getTranslationKey()));
     }
     
 }

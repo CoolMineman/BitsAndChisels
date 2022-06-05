@@ -16,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -98,7 +97,7 @@ public class Blueprint extends Item implements CauldronBehavior {
 
     @Override
     public Text getName(ItemStack stack) {
-        return stack.getSubNbt(BLUEPRINT_STRING) == null ? new TranslatableText(this.getTranslationKey() + ".unwritten") : super.getName(stack);
+        return stack.getSubNbt(BLUEPRINT_STRING) == null ? Text.translatable(this.getTranslationKey() + ".unwritten") : super.getName(stack);
     }
 
     @Override

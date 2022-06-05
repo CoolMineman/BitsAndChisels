@@ -1,7 +1,6 @@
 package io.github.coolmineman.bitsandchisels.mixin;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -9,7 +8,6 @@ import org.spongepowered.asm.mixin.Unique;
 import io.github.coolmineman.bitsandchisels.BitsAndChisels;
 import io.github.coolmineman.bitsandchisels.CanvasHelper;
 import io.github.coolmineman.bitsandchisels.duck.CubeRenderStuff;
-import java.util.Random;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -22,6 +20,7 @@ import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.LocalRandom;
 
 @Mixin(BlockState.class)
 public class BlockStateMixin implements CubeRenderStuff {
@@ -43,8 +42,8 @@ public class BlockStateMixin implements CubeRenderStuff {
             materials = new RenderMaterial[7][];
             for (Direction d : Direction.values()) {
                 BakedModelManager modelman = MinecraftClient.getInstance().getBakedModelManager();
-                List<BakedQuad> dQuads = newModel.getQuads(thiz, d, new Random(0));
-                if (dQuads == null || dQuads.isEmpty()) dQuads = modelman.getMissingModel().getQuads(thiz, d, ThreadLocalRandom.current());
+                List<BakedQuad> dQuads = newModel.getQuads(thiz, d, new LocalRandom(0));
+                if (dQuads == null || dQuads.isEmpty()) dQuads = modelman.getMissingModel().getQuads(thiz, d, new LocalRandom(0));
                 BakedQuad[] localquads = dQuads.toArray(new BakedQuad[0]);
                 quads[d.getId()] = localquads;
                 materials[d.getId()] = new RenderMaterial[localquads.length];
@@ -61,16 +60,16 @@ public class BlockStateMixin implements CubeRenderStuff {
         }
     }
 
-	@Override
-	public BakedQuad[] getQuads(int direction) {
+    @Override
+    public BakedQuad[] getQuads(int direction) {
         recomputeIfNeeded();
-		return quads[direction];
-	}
+        return quads[direction];
+    }
 
-	@Override
-	public RenderMaterial[] getMaterials(int direction) {
+    @Override
+    public RenderMaterial[] getMaterials(int direction) {
         recomputeIfNeeded();
-		return materials[direction];
-	}
+        return materials[direction];
+    }
     
 }

@@ -1,19 +1,21 @@
 import io.github.coolcrabs.brachyura.dependency.JavaJarDependency;
 import io.github.coolcrabs.brachyura.fabric.FabricLoader;
 import io.github.coolcrabs.brachyura.fabric.FabricMaven;
-import io.github.coolcrabs.brachyura.fabric.FabricProject;
+import io.github.coolcrabs.brachyura.fabric.SimpleFabricProject;
 import io.github.coolcrabs.brachyura.fabric.Yarn;
+import io.github.coolcrabs.brachyura.fabric.FabricContext.ModDependencyCollector;
+import io.github.coolcrabs.brachyura.fabric.FabricContext.ModDependencyFlag;
 import io.github.coolcrabs.brachyura.maven.Maven;
 import io.github.coolcrabs.brachyura.maven.MavenId;
 import io.github.coolcrabs.brachyura.minecraft.Minecraft;
 import io.github.coolcrabs.brachyura.minecraft.VersionMeta;
 import net.fabricmc.mappingio.tree.MappingTree;
 
-public class Buildscript extends FabricProject {
+public class Buildscript extends SimpleFabricProject {
 
     @Override
     public VersionMeta createMcVersion() {
-        return Minecraft.getVersion("1.18.2");
+        return Minecraft.getVersion("1.19-rc2");
     }
 
     @Override
@@ -23,37 +25,37 @@ public class Buildscript extends FabricProject {
 
     @Override
     public MappingTree createMappings() {
-        return Yarn.ofMaven(FabricMaven.URL, FabricMaven.yarn("1.18.2+build.1")).tree;
+        return Yarn.ofMaven(FabricMaven.URL, FabricMaven.yarn("1.19-rc2+build.1")).tree;
     }
 
     @Override
     public FabricLoader getLoader() {
-        return new FabricLoader(FabricMaven.URL, FabricMaven.loader("0.13.3"));
+        return new FabricLoader(FabricMaven.URL, FabricMaven.loader("0.14.6"));
     }
 
     @Override
     public void getModDependencies(ModDependencyCollector d) {
         // Libraries
         String[][] fapiModules = new String[][] {
-            {"fabric-registry-sync-v0", "0.9.5+55dca1a4d2"},
-            {"fabric-resource-loader-v0", "0.4.16+55dca1a4d2"},
-            {"fabric-renderer-api-v1", "0.4.12+d882b915d2"},
-            {"fabric-item-groups-v0", "0.3.8+3ac43d95d2"},
-            {"fabric-object-builder-api-v1", "2.0.1+d882b915d2"},
-            {"fabric-rendering-v1", "1.10.6+54e5b2ecd2"},
-            {"fabric-networking-api-v1", "1.0.20+d882b915d2"},
-            {"fabric-api-base", "0.4.3+d7c144a8d2"},
-            {"fabric-models-v0", "0.3.5+d7c144a8d2"},
-            {"fabric-renderer-indigo", "0.4.16+d8c7b9aed2"},
-            {"fabric-entity-events-v1", "1.4.7+d7c144a8d2"},
-            {"fabric-events-interaction-v0", "0.4.18+d7c144a8d2"},
-            {"fabric-rendering-data-attachment-v1", "0.3.6+d7c144a8d2"},
-            {"fabric-mining-level-api-v1", "2.0.2+d1027f7dd2"}
+            {"fabric-registry-sync-v0", "0.9.14+92cf9a3ecd"},
+            {"fabric-resource-loader-v0", "0.5.2+9e7660c6cd"},
+            {"fabric-renderer-api-v1", "1.0.7+9ff28f40cd"},
+            {"fabric-item-groups-v0", "0.3.22+9ff28f40cd"},
+            {"fabric-object-builder-api-v1", "4.0.4+9ff28f40cd"},
+            {"fabric-rendering-v1", "1.10.13+9ff28f40cd"},
+            {"fabric-networking-api-v1", "1.0.25+9ff28f40cd"},
+            {"fabric-api-base", "0.4.8+e62f51a3cd"},
+            {"fabric-models-v0", "0.3.14+9ff28f40cd"},
+            {"fabric-renderer-indigo", "0.6.5+9ff28f40cd"},
+            {"fabric-entity-events-v1", "1.4.15+9ff28f40cd"},
+            {"fabric-events-interaction-v0", "0.4.25+9ff28f40cd"},
+            {"fabric-rendering-data-attachment-v1", "0.3.11+9ff28f40cd"},
+            {"fabric-mining-level-api-v1", "2.1.6+9ff28f40cd"}
         };
         for (String[] module : fapiModules) {
             d.addMaven(FabricMaven.URL, new MavenId(FabricMaven.GROUP_ID + ".fabric-api", module[0], module[1]), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE);
         }
-        d.addMaven("https://storage.googleapis.com/devan-maven/", new MavenId("net.devtech:Stacc:1.2.3"), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE, ModDependencyFlag.JIJ);
+        jij(d.addMaven("https://storage.googleapis.com/devan-maven/", new MavenId("net.devtech:Stacc:1.3.3"), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE));
         // Compat
         d.addMaven("https://maven.shedaniel.me/", new MavenId("me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.247-alpha"), ModDependencyFlag.COMPILE);
         d.addMaven("https://maven.vram.io", new MavenId("io.vram:frex-fabric-mc118:6.0.236"), ModDependencyFlag.COMPILE);
