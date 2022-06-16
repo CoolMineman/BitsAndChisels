@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "bitsandchisels",
-  "version": "2.6.10",
+  "version": "2.6.12",
   "name": "BitsAndChisels",
   "description": "Turn Blocks Into Small Bits With Chisels; Build All The Things",
   "authors": [
@@ -21,7 +21,7 @@
     "client": [
       "io.github.coolmineman.bitsandchisels.BitsBlockClient"
     ],
-    "rei_plugins": [
+    "rei_client": [
       "io.github.coolmineman.bitsandchisels.tellreistopbad.TellReiStopBad"
     ]
   },
