@@ -55,7 +55,7 @@ public class Buildscript extends SimpleFabricProject {
         for (String[] module : fapiModules) {
             d.addMaven(FabricMaven.URL, new MavenId(FabricMaven.GROUP_ID + ".fabric-api", module[0], module[1]), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE);
         }
-        jij(d.addMaven("https://storage.googleapis.com/devan-maven/", new MavenId("net.devtech:Stacc:1.3.3"), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE));
+        jij(d.addMaven("https://storage.googleapis.com/devan-maven/", new MavenId("net.devtech:Stacc:1.3.4"), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE));
         // Compat
         d.addMaven("https://maven.shedaniel.me/", new MavenId("me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.475"), ModDependencyFlag.COMPILE);
         d.addMaven("https://maven.vram.io", new MavenId("io.vram:frex-fabric-mc118:6.0.236"), ModDependencyFlag.COMPILE);
