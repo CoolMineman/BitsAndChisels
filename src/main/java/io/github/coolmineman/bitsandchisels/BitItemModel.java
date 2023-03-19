@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.joml.Vector3f;
+
 import com.mojang.datafixers.util.Pair;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -18,6 +20,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
@@ -31,7 +34,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
@@ -40,17 +43,17 @@ public class BitItemModel implements UnbakedModel, BakedModel, FabricBakedModel 
     //Copied from fapi
 
     private static Transformation makeTransform(float rotationX, float rotationY, float rotationZ, float translationX, float translationY, float translationZ, float scaleX, float scaleY, float scaleZ) {
-		Vec3f translation = new Vec3f(translationX, translationY, translationZ);
-		translation.scale(0.0625f);
-		translation.clamp(-5.0F, 5.0F);
-		return new Transformation(new Vec3f(rotationX, rotationY, rotationZ), translation, new Vec3f(scaleX, scaleY, scaleZ));
-	}
+        Vector3f translation = new Vector3f(translationX, translationY, translationZ);
+        translation.mul(0.0625f);
+        translation.set(MathHelper.clamp(translation.x, -5.0F, 5.0F), MathHelper.clamp(translation.y, -5.0F, 5.0F), MathHelper.clamp(translation.z, -5.0F, 5.0F));
+        return new Transformation(new Vector3f(rotationX, rotationY, rotationZ), translation, new Vector3f(scaleX, scaleY, scaleZ));
+    }
 
     public static final Transformation TRANSFORM_BLOCK_GUI = makeTransform(30, 225, 0, 0, 0, 0, 0.625f * 0.5f, 0.625f * 0.5f, 0.625f * 0.5f);
-	public static final Transformation TRANSFORM_BLOCK_GROUND = makeTransform(0, 0, 0, 0, 3, 0, 0.25f * 0.5f, 0.25f * 0.5f, 0.25f * 0.5f);
-	public static final Transformation TRANSFORM_BLOCK_FIXED = makeTransform(0, 0, 0, 0, 0, 0, 0.5f * 0.5f, 0.5f * 0.5f, 0.5f * 0.5f);
-	public static final Transformation TRANSFORM_BLOCK_3RD_PERSON_RIGHT = makeTransform(75, 45, 0, 0, 2.5f, 0, 0.375f * 0.5f, 0.375f * 0.5f, 0.375f * 0.5f);
-	public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_RIGHT = makeTransform(0, 45, 0, 0, 0, 0, 0.4f * 0.5f, 0.4f * 0.5f, 0.4f * 0.5f);
+    public static final Transformation TRANSFORM_BLOCK_GROUND = makeTransform(0, 0, 0, 0, 3, 0, 0.25f * 0.5f, 0.25f * 0.5f, 0.25f * 0.5f);
+    public static final Transformation TRANSFORM_BLOCK_FIXED = makeTransform(0, 0, 0, 0, 0, 0, 0.5f * 0.5f, 0.5f * 0.5f, 0.5f * 0.5f);
+    public static final Transformation TRANSFORM_BLOCK_3RD_PERSON_RIGHT = makeTransform(75, 45, 0, 0, 2.5f, 0, 0.375f * 0.5f, 0.375f * 0.5f, 0.375f * 0.5f);
+    public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_RIGHT = makeTransform(0, 45, 0, 0, 0, 0, 0.4f * 0.5f, 0.4f * 0.5f, 0.4f * 0.5f);
     public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_LEFT = makeTransform(0, 225, 0, 0, 0, 0, 0.4f * 0.5f, 0.4f * 0.5f, 0.4f * 0.5f);
     
     private static BlockState transform_state;
@@ -136,15 +139,14 @@ public class BitItemModel implements UnbakedModel, BakedModel, FabricBakedModel 
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
-        return Collections.emptyList();
+    public BakedModel bake(Baker var1, Function<SpriteIdentifier, Sprite> var2, ModelBakeSettings var3,
+            Identifier var4) {
+        return this;
     }
 
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
-        return this;
+    public void setParents(Function<Identifier, UnbakedModel> var1) {
+        //???
     }
     
 }

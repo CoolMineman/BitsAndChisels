@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
@@ -71,15 +72,13 @@ public class BitsBlockModel implements UnbakedModel, BakedModel, FabricBakedMode
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
-        return Collections.singletonList(SPRITE);
+    public BakedModel bake(Baker var1, Function<SpriteIdentifier, Sprite> var2, ModelBakeSettings var3, Identifier var4) {
+        return this;
     }
 
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
-            ModelBakeSettings rotationContainer, Identifier modelId) {
-        return this;
+    public void setParents(Function<Identifier, UnbakedModel> var1) {
+        //???
     }
 
     @Override

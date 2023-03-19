@@ -3,6 +3,7 @@ package io.github.coolmineman.bitsandchisels;
 import java.util.Arrays;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import io.github.coolmineman.bitsandchisels.duck.CubeRenderStuff;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -20,7 +21,6 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
 
 public class BitMeshes {
@@ -34,7 +34,7 @@ public class BitMeshes {
     public static Mesh createMesh(BlockState[][][] states, @Nullable World world, @Nullable BlockPos pos) {
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
         QuadEmitter emitter = builder.getEmitter();
-        Vec3f tmp = new Vec3f();
+        Vector3f tmp = new Vector3f();
         boolean[][] used = new boolean[16][16];
 
         //X
@@ -156,7 +156,7 @@ public class BitMeshes {
         return builder.build();
     }
 
-    private static void doQuad(@Nullable World world, @Nullable BlockPos pos, QuadEmitter emitter, Vec3f tmp, Direction d, BlockState state, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
+    private static void doQuad(@Nullable World world, @Nullable BlockPos pos, QuadEmitter emitter, Vector3f tmp, Direction d, BlockState state, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
         CubeRenderStuff cubeRenderStuff = CubeRenderStuff.of(state);
         for (int z = 0; z < cubeRenderStuff.getQuads(d.getId()).length; z++) {
             BakedQuad vanillaQuad = cubeRenderStuff.getQuads(d.getId())[z];
@@ -219,7 +219,7 @@ public class BitMeshes {
         return false;
     }
 
-    private static void transform(MutableQuadView quad, Direction direction, int minx, int miny, int minz, int maxx, int maxy, int maxz, Vec3f tmp) {
+    private static void transform(MutableQuadView quad, Direction direction, int minx, int miny, int minz, int maxx, int maxy, int maxz, Vector3f tmp) {
         Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().getAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
         transform0(minx * ONE_PIXEL, (maxx + 1) * ONE_PIXEL, miny * ONE_PIXEL, (maxy + 1) * ONE_PIXEL, minz * ONE_PIXEL, (maxz + 1) * ONE_PIXEL, quad, tmp);
         int bake_flags = MutableQuadView.BAKE_LOCK_UV;
@@ -227,12 +227,12 @@ public class BitMeshes {
         quad.spriteBake(0, sprite, bake_flags);
     }
 
-    private static void transform0(float minx, float maxx, float miny, float maxy, float minz, float maxz, MutableQuadView quad, Vec3f tmp) {
+    private static void transform0(float minx, float maxx, float miny, float maxy, float minz, float maxz, MutableQuadView quad, Vector3f tmp) {
         for (int i = 0; i < 4; i++) {
             quad.copyPos(i, tmp);
-            float _x = tmp.getX();
-            float _y = tmp.getY();
-            float _z = tmp.getZ();
+            float _x = tmp.x();
+            float _y = tmp.y();
+            float _z = tmp.z();
 
             if (approxEqual(_x, 0)) {
                 _x = minx;

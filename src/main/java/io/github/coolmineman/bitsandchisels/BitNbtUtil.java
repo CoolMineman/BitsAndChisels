@@ -11,6 +11,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
 
 public class BitNbtUtil {
     private BitNbtUtil() { }
@@ -81,7 +82,7 @@ public class BitNbtUtil {
         if (tag == null) {
             return Blocks.AIR.getDefaultState();
         } else {
-            return NbtHelper.toBlockState(tag);
+            return NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), tag);
         }
     }
 

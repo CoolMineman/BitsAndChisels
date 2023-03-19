@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "bitsandchisels",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "name": "BitsAndChisels",
   "description": "Turn Blocks Into Small Bits With Chisels; Build All The Things",
   "authors": [
@@ -37,5 +37,6 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "minecraft": "*"
-  }
+  },
+  "accessWidener": "b&c_ahhh.accesswidener"
 }
