@@ -16,25 +16,25 @@ Bits are pixel sized portions of blocks. You can place bits by right-clicking wi
 
 ![Bits](images/bits.png)
 
-### Iron Chisle
+### Iron Chisel
 
-The Iron Chisle carves out 64-bit (4 x 4 x 4) areas within blocks by left-clicking with it. This tool is useful for gathering large amounts of bits to bulid with.
+The Iron Chisel carves out 64-bit (4 x 4 x 4) areas within blocks by left-clicking with it. This tool is useful for gathering large amounts of bits to bulid with.
 
-![Simple Iron Chisle](images/simple_iron_chisle_recipe.png)
-
-
-### Diamond Chisle
-
-The Diamond Chisle can carve out small 1-bit (1 x 1 x 1) areas within blocks by left-clicking with it. This is useful for creating very small details in blocks.
-
-![Simple Diamond Chisle](images/simple_diamond_chisle_recipe.png)
+![Simple Iron Chisel](images/simple_iron_chisel_recipe.png)
 
 
-### Smart Chisle
+### Diamond Chisel
 
-The Smart Chisle can carve out an area of a block by left-clicking on two different bits within a block.
+The Diamond Chisel can carve out small 1-bit (1 x 1 x 1) areas within blocks by left-clicking with it. This is useful for creating very small details in blocks.
 
-![Smart Chisle](images/smart_chisel_recipe.png)
+![Simple Diamond Chisel](images/simple_diamond_chisel_recipe.png)
+
+
+### Smart Chisel
+
+The Smart Chisel can carve out an area of a block by left-clicking on two different bits within a block.
+
+![Smart Chisel](images/smart_chisel_recipe.png)
 
 ### The Wrench
 
