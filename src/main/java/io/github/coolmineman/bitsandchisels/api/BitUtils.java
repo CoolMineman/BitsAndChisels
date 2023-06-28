@@ -109,7 +109,7 @@ public class BitUtils {
     
     public static void attemptBreak(ServerPlayerEntity player, BlockPos pos, int x, int y, int z) {
         if (canBreak(player, pos, x, y, z)) {
-            World world = player.world;
+            World world = player.getWorld();
             BlockState oldstate = BitUtils.getBit(world, pos, x, y, z);
             if (BitUtils.exists(oldstate) && BitUtils.setBit(world, pos, x, y, z, Blocks.AIR.getDefaultState())) {
                 BitUtils.update(world, pos);
@@ -119,7 +119,7 @@ public class BitUtils {
     }
     
     public static void attemptBreakRegion(ServerPlayerEntity player, BlockPos rootPos, int x1, int y1, int z1, int x2, int y2, int z2) {
-        World world = player.world;
+        World world = player.getWorld();
         BlockPos.Mutable mut = new BlockPos.Mutable();
         Object2IntArrayMap<BlockState> drops = new Object2IntArrayMap<>();
         for (int i = x1; i <= x2; i++) {

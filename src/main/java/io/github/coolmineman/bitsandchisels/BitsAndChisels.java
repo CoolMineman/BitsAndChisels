@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -21,6 +20,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class BitsAndChisels implements ModInitializer {
@@ -31,7 +31,7 @@ public class BitsAndChisels implements ModInitializer {
 
 	public static final boolean CANVAS = FabricLoader.getInstance().isModLoaded("canvas");
 
-	public static final BitsBlock BITS_BLOCK = new BitsBlock(FabricBlockSettings.of(Material.METAL).nonOpaque().dynamicBounds().hardness(4.0f).luminance(s -> s.get(BitsBlock.LIGHT_LEVEL)));
+	public static final BitsBlock BITS_BLOCK = new BitsBlock(FabricBlockSettings.create().nonOpaque().dynamicBounds().hardness(4.0f).luminance(s -> s.get(BitsBlock.LIGHT_LEVEL)));
 	public static final BlockItem BITS_BLOCK_ITEM = new BlockItem(BITS_BLOCK, new Item.Settings());
 	public static final DiamondChisel DIAMOND_CHISEL = new DiamondChisel(new Item.Settings());
 	public static final IronChisel IRON_CHISEL = new IronChisel(new Item.Settings());
@@ -40,7 +40,7 @@ public class BitsAndChisels implements ModInitializer {
 	public static final Blueprint BLUEPRINT = new Blueprint(new Item.Settings().maxCount(1));
 	public static BlockEntityType<BitsBlockEntity> BITS_BLOCK_ENTITY;
 
-	public static final ItemGroup ITEM_GROUP = FabricItemGroup.builder(new Identifier(MODID, MODID)).icon(BitsAndChisels::getDiamondChiselStack).entries((context, entries) -> {
+	public static final ItemGroup ITEM_GROUP = FabricItemGroup.builder().icon(BitsAndChisels::getDiamondChiselStack).displayName(Text.translatable("itemGroup.bitsandchisels.bitsandchisels")).entries((context, entries) -> {
 		entries.add(DIAMOND_CHISEL);
 		entries.add(IRON_CHISEL);
 		entries.add(SMART_CHISEL);
@@ -69,6 +69,8 @@ public class BitsAndChisels implements ModInitializer {
 		Registry.register(Registries.ITEM, new Identifier(MODID, "bit_item"), BIT_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(MODID, "wrench"), WRENCH_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(MODID, "blueprint"), BLUEPRINT);
+
+		Registry.register(Registries.ITEM_GROUP, new Identifier(MODID, MODID), ITEM_GROUP);
 	}
 	
 }

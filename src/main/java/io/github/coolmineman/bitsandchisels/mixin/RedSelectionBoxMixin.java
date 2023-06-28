@@ -19,7 +19,7 @@ import net.minecraft.util.shape.VoxelShape;
 public class RedSelectionBoxMixin implements RedBoxCallback.IRedBoxDrawer {
 
     @Shadow
-    private static void drawShapeOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, VoxelShape voxelShape, double d, double e, double f, float g, float h, float i, float j) {
+    private static void drawCuboidShapeOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, VoxelShape voxelShape, double d, double e, double f, float g, float h, float i, float j) {
         throw new RuntimeException("mixin failed");
     }
 

@@ -15,7 +15,7 @@ public class Buildscript extends SimpleFabricProject {
 
     @Override
     public VersionMeta createMcVersion() {
-        return Minecraft.getVersion("1.19.4");
+        return Minecraft.getVersion("1.20.1");
     }
 
     @Override
@@ -25,12 +25,12 @@ public class Buildscript extends SimpleFabricProject {
 
     @Override
     public MappingTree createMappings() {
-        return Yarn.ofMaven(FabricMaven.URL, FabricMaven.yarn("1.19.4+build.1")).tree;
+        return Yarn.ofMaven(FabricMaven.URL, FabricMaven.yarn("1.20.1+build.8")).tree;
     }
 
     @Override
     public FabricLoader getLoader() {
-        return new FabricLoader(FabricMaven.URL, FabricMaven.loader("0.14.17"));
+        return new FabricLoader(FabricMaven.URL, FabricMaven.loader("0.14.21"));
     }
 
 
@@ -38,26 +38,26 @@ public class Buildscript extends SimpleFabricProject {
     public void getModDependencies(ModDependencyCollector d) {
         // Libraries
         String[][] fapiModules = new String[][] {
-            {"fabric-registry-sync-v0", "2.1.2+a383ab97f4"},
-            {"fabric-resource-loader-v0", "0.11.0+938a1d56f4"},
-            {"fabric-renderer-api-v1", "2.2.4+81e8c576f4"},
-            {"fabric-item-group-api-v1", "3.0.3+043f9acff4"},
-            {"fabric-object-builder-api-v1", "7.0.1+63b515f4f4"},
-            {"fabric-rendering-v1", "2.1.0+8f878217f4"},
-            {"fabric-networking-api-v1", "1.2.22+ca5f59aaf4"},
-            {"fabric-api-base", "0.4.23+9ff28bcef4"},
-            {"fabric-models-v0", "0.3.29+11ba9c3bf4"},
-            {"fabric-renderer-indigo", "1.1.0+81e8c576f4"},
-            {"fabric-entity-events-v1", "1.5.12+e45f7c65f4"},
-            {"fabric-events-interaction-v0", "0.4.42+a1ccd7bff4"},
-            {"fabric-rendering-data-attachment-v1", "0.3.27+afca2f3ef4"},
-            {"fabric-lifecycle-events-v1", "2.2.14+5da15ca1f4"},
-            {"fabric-mining-level-api-v1", "2.1.37+49abcf7ef4"}
+            {"fabric-registry-sync-v0", "2.2.6+b3afc78b77"},
+            {"fabric-resource-loader-v0", "0.11.7+f7923f6d77"},
+            {"fabric-renderer-api-v1", "3.1.0+c154966e77"},
+            {"fabric-item-group-api-v1", "4.0.7+b3afc78b77"},
+            {"fabric-object-builder-api-v1", "11.0.6+b3afc78b77"},
+            {"fabric-rendering-v1", "3.0.6+b3afc78b77"},
+            {"fabric-networking-api-v1", "1.3.8+b3afc78b77"},
+            {"fabric-api-base", "0.4.29+b04edc7a77"},
+            {"fabric-models-v0", "0.3.35+b3afc78b77"},
+            {"fabric-renderer-indigo", "1.4.0+c154966e77"},
+            {"fabric-entity-events-v1", "1.5.21+b3afc78b77"},
+            {"fabric-events-interaction-v0", "0.6.0+b3afc78b77"},
+            {"fabric-rendering-data-attachment-v1", "0.3.33+b3afc78b77"},
+            {"fabric-lifecycle-events-v1", "2.2.20+b3afc78b77"},
+            {"fabric-mining-level-api-v1", "2.1.47+b3afc78b77"}
         };
         for (String[] module : fapiModules) {
             d.addMaven(FabricMaven.URL, new MavenId(FabricMaven.GROUP_ID + ".fabric-api", module[0], module[1]), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE);
         }
-        jij(d.addMaven(Maven.MAVEN_LOCAL, new MavenId("net.devtech:stacc:1.5.2+boneless"), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE));
+        jij(d.addMaven(Maven.MAVEN_LOCAL, new MavenId("net.devtech:stacc:1.5.2+boneless2ahhhh"), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE));
         // Compat
         d.addMaven("https://maven.shedaniel.me/", new MavenId("me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.475"), ModDependencyFlag.COMPILE);
         d.addMaven("https://maven.vram.io", new MavenId("io.vram:frex-fabric-mc118:6.0.236"), ModDependencyFlag.COMPILE);

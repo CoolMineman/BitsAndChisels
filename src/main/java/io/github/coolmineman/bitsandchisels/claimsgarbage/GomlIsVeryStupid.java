@@ -9,12 +9,12 @@ public enum GomlIsVeryStupid implements Stupid {
 
     @Override
     public boolean canBreak(ServerPlayerEntity player, BlockPos pos) {
-        return ClaimUtils.canModify(player.world, pos, player);
+        return ClaimUtils.canModify(player.getServerWorld(), pos, player);
     }
 
     @Override
     public boolean canPlace(ServerPlayerEntity player, BlockPos pos) {
-        return ClaimUtils.canModify(player.world, pos, player);
+        return ClaimUtils.canModify(player.getServerWorld(), pos, player);
     }
 
 }

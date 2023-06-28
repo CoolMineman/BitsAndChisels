@@ -61,7 +61,7 @@ public class BitItem extends Item implements ServerPlayNetworking.PlayChannelHan
                 x1 <= x2 && y1 <= y2 && z1 <= z2 &&
                 ((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)) + ((z2 - z1) * (z2 - z1)) <= 1000000
             ) {
-                World world = player.world;
+                World world = player.getWorld();
                 BlockPos.Mutable mut = new BlockPos.Mutable();
                 ItemStack stack = player.getStackInHand(hand);
                 BlockState state = BitUtils.getBit(stack);

@@ -24,6 +24,6 @@ public enum FlanIsStupid implements Stupid {
     // What the API should have
     private static boolean checkPermission(ServerPlayerEntity entity, BlockPos pos, ClaimPermission perm) {
         // What the API has
-        return ClaimHandler.getPermissionStorage(entity.getWorld()).getForPermissionCheck(pos).canInteract(entity, perm, pos);
+        return ClaimHandler.getPermissionStorage(entity.getServerWorld()).getForPermissionCheck(pos).canInteract(entity, perm, pos);
     }
 }
