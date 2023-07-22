@@ -161,7 +161,7 @@ public class BitMeshes {
         for (int z = 0; z < cubeRenderStuff.getQuads(d.getId()).length; z++) {
             BakedQuad vanillaQuad = cubeRenderStuff.getQuads(d.getId())[z];
             MutableQuadView quad = emitter.fromVanilla(vanillaQuad, cubeRenderStuff.getMaterials(d.getId())[z], d);
-            BitMeshes.transform(quad, d, minx, miny, minz, maxx, maxy, maxz, tmp);
+            BitMeshes.transformQuad(quad, vanillaQuad.getSprite(), minx, miny, minz, maxx, maxy, maxz, tmp);
             if (vanillaQuad.hasColor()) {
                 int color = 0xFF000000 | ColorPolice.getBlockColor(state, world, pos, vanillaQuad.getColorIndex());
                 quad.spriteColor(0, color, color, color, color);
@@ -219,15 +219,28 @@ public class BitMeshes {
         return false;
     }
 
-    private static void transform(MutableQuadView quad, Direction direction, int minx, int miny, int minz, int maxx, int maxy, int maxz, Vector3f tmp) {
-        Sprite sprite = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().getAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)).find(quad, 0);
-        transform0(minx * ONE_PIXEL, (maxx + 1) * ONE_PIXEL, miny * ONE_PIXEL, (maxy + 1) * ONE_PIXEL, minz * ONE_PIXEL, (maxz + 1) * ONE_PIXEL, quad, tmp);
+    /**
+     * Cuts quad for desired size and re-bakes texture
+     */
+    private static void transformQuad(MutableQuadView quad, Sprite sprite, int minx, int miny, int minz, int maxx, int maxy, int maxz, Vector3f tmp) {
+        clampQuad(minx * ONE_PIXEL, (maxx + 1) * ONE_PIXEL, miny * ONE_PIXEL, (maxy + 1) * ONE_PIXEL, minz * ONE_PIXEL, (maxz + 1) * ONE_PIXEL, quad, tmp);
         int bake_flags = MutableQuadView.BAKE_LOCK_UV;
-        if (direction == Direction.UP) bake_flags = bake_flags | MutableQuadView.BAKE_FLIP_V;
-        quad.spriteBake(0, sprite, bake_flags);
+
+        float u0 = quad.u(0);
+        float v0 = quad.v(0);
+        float u2 = quad.u(2);
+        float v2 = quad.v(2);
+        if (u0 < u2) {
+            if (v0 > v2) bake_flags |= MutableQuadView.BAKE_ROTATE_90;
+        } else {
+            if (v0 < v2) bake_flags |= MutableQuadView.BAKE_ROTATE_270;
+            else         bake_flags |= MutableQuadView.BAKE_ROTATE_180;
+        }
+
+        quad.spriteBake(sprite, bake_flags);
     }
 
-    private static void transform0(float minx, float maxx, float miny, float maxy, float minz, float maxz, MutableQuadView quad, Vector3f tmp) {
+    private static void clampQuad(float minx, float maxx, float miny, float maxy, float minz, float maxz, MutableQuadView quad, Vector3f tmp) {
         for (int i = 0; i < 4; i++) {
             quad.copyPos(i, tmp);
             float _x = tmp.x();
