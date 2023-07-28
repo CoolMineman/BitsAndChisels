@@ -1,0 +1,11 @@
+{
+  "itemGroup.bitsandchisels.bitsandchisels": "lili en ilo kipisi pi lili",
+  "item.bitsandchisels.bit_item": "lili pi %s",
+  "item.bitsandchisels.diamond_chisel": "ilo kipisi laso pi lili",
+  "item.bitsandchisels.iron_chisel": "ilo kipisi walo pi lili",
+  "item.bitsandchisels.smart_chisel": "ilo kipisi sona",
+  "item.bitsandchisels.wrench": "ilo pi tawa sike (lili en ilo kipisi pi lili)",
+  "item.bitsandchisels.blueprint.unwritten": "lipu laso sin",
+  "item.bitsandchisels.blueprint": "lipu laso",
+  "block.bitsandchisels.bits_block": "leko pi kulupu lili"
+}
