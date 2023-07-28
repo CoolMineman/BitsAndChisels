@@ -73,7 +73,7 @@ public class BitItem extends Item implements ServerPlayNetworking.PlayChannelHan
                             int x = Math.floorMod(i, 16);
                             int y = Math.floorMod(j, 16);
                             int z = Math.floorMod(k, 16);
-                            if (world.canSetBlock(mut) && !BitUtils.exists(BitUtils.getBit(world, mut, x, y, z))) {
+                            if (BitUtils.canPlace(player, mut, x, y, z)) {
                                 boolean b = BitUtils.setBit(world, mut, x, y, z, state);
                                 if (b && !player.isCreative()) stack.decrement(1);
                                 if (stack.isEmpty()) {
