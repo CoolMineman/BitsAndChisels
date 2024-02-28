@@ -26,7 +26,7 @@ public class Blueprint extends Item implements CauldronBehavior {
 
     public Blueprint(Settings settings) {
         super(settings);
-        CauldronBehavior.WATER_CAULDRON_BEHAVIOR.put(this, this);
+        CauldronBehavior.WATER_CAULDRON_BEHAVIOR.map().put(this, this);
     }
 
     @Override
