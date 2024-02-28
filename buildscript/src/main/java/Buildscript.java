@@ -15,7 +15,7 @@ public class Buildscript extends SimpleFabricProject {
 
     @Override
     public VersionMeta createMcVersion() {
-        return Minecraft.getVersion("1.20.1");
+        return Minecraft.getVersion("1.20.4");
     }
 
     @Override
@@ -25,12 +25,12 @@ public class Buildscript extends SimpleFabricProject {
 
     @Override
     public MappingTree createMappings() {
-        return Yarn.ofMaven(FabricMaven.URL, FabricMaven.yarn("1.20.1+build.8")).tree;
+        return Yarn.ofMaven(FabricMaven.URL, FabricMaven.yarn("1.20.4+build.3")).tree;
     }
 
     @Override
     public FabricLoader getLoader() {
-        return new FabricLoader(FabricMaven.URL, FabricMaven.loader("0.14.21"));
+        return new FabricLoader(FabricMaven.URL, FabricMaven.loader("0.15.7"));
     }
 
 
@@ -57,7 +57,7 @@ public class Buildscript extends SimpleFabricProject {
         for (String[] module : fapiModules) {
             d.addMaven(FabricMaven.URL, new MavenId(FabricMaven.GROUP_ID + ".fabric-api", module[0], module[1]), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE);
         }
-        jij(d.addMaven(Maven.MAVEN_LOCAL, new MavenId("net.devtech:stacc:1.5.2+boneless2ahhhh"), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE));
+        jij(d.addMaven(Maven.MAVEN_LOCAL, new MavenId("net.devtech:stacc:1.8.0"), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE));
         // Compat
         d.addMaven("https://maven.shedaniel.me/", new MavenId("me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.475"), ModDependencyFlag.COMPILE);
         d.addMaven("https://maven.vram.io", new MavenId("io.vram:frex-fabric-mc118:6.0.236"), ModDependencyFlag.COMPILE);
